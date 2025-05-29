@@ -10,8 +10,23 @@ int main()
     listaTeste.InsereFinal(30);
     listaTeste.ImprimeElementos();
 
-    int ultimoElemento = listaTeste.RemoveFinal();
-    std::cout << "Ultimo elemento:\n" << ultimoElemento << std::endl;
+    // int ultimoElemento = listaTeste.RemoveFinal();
+    // std::cout << "Ultimo elemento:\n" << ultimoElemento << std::endl;
+
+    std::cout << "Busca elemento 1: " << listaTeste.BuscaElemento(0) << std::endl;
+    std::cout << "Busca elemento 2: " << listaTeste.BuscaElemento(1) << std::endl;
+    std::cout << "Busca elemento 3: " << listaTeste.BuscaElemento(2) << std::endl;
+
+    std::cout << "Tamanho: " << listaTeste.GetTamanho() << std::endl;
+    std::cout << "Capacidade: " << listaTeste.GetCapacidade() << std::endl;
+
+    listaTeste.InsereFinal(40);
+    std::cout << "Tamanho: " << listaTeste.GetTamanho() << std::endl;
+    std::cout << "Capacidade: " << listaTeste.GetCapacidade() << std::endl;
+
+    listaTeste.InsereInicio(5);
+    std::cout << "Tamanho: " << listaTeste.GetTamanho() << std::endl;
+    std::cout << "Capacidade: " << listaTeste.GetCapacidade() << std::endl;
     
     // listaTeste.InsereInicio(1);
     // listaTeste.InsereInicio(2);

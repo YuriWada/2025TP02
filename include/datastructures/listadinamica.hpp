@@ -32,7 +32,7 @@ class ListaDinamica
     void InsereFinal(const T& element)
     {
         if (m_tamanho >= m_capacidade) 
-            redimensionar(m_capacidade == 0 ? 1 : m_capacidade*2); // dobra capacidade do vetor
+            redimensionar(m_capacidade == 0 ? 1 : m_capacidade+2); // aumenta capacidade do vetor
 
         m_dados[m_tamanho] = element; // armazena o elemento tipo T (generico)
         m_tamanho++;
@@ -73,7 +73,7 @@ class ListaDinamica
     }
 
     // retorna elemento da posicao
-    T BuscaElemento(int pos)
+    T& BuscaElemento(int pos)
     {
         return m_dados[pos];
     }
