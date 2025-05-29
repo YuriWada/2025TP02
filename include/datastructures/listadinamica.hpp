@@ -1,6 +1,8 @@
 #ifndef ListaDinamica_H
 #define ListaDinamica_H
 
+#include <iostream>
+
 // classe para uma lista dinamica
 // eh uma classe template para ser usada genericamente
 template <typename T>
@@ -8,7 +10,7 @@ class ListaDinamica
 {
     public:
     // construtor
-    void ListaDinamica() : m_dados(nullptr), m_tamanho(0), m_capacidade(0) {};
+    ListaDinamica() : m_dados(nullptr), m_tamanho(0), m_capacidade(0) {};
 
     // destrutor
     ~ListaDinamica() { delete[] m_dados; }
@@ -49,10 +51,11 @@ class ListaDinamica
             return;
         }
 
+        m_tamanho++;
         // passa todos os elementos para a posicao a frente
         for (int i = m_tamanho-1; i > 0; i--)
-            m_dados[i+1] = m_dados[i];
-        
+            m_dados[i] = m_dados[i-1];
+
         m_dados[0] = element;
     }
 
@@ -65,7 +68,7 @@ class ListaDinamica
         else 
             throw "Nao eh possivel remover ultimo elemento!";
     
-        T ultimoElemento = m_dados[m_tamanho+1];
+        T ultimoElemento = m_dados[m_tamanho];
         return ultimoElemento;    
     }
 
@@ -74,6 +77,17 @@ class ListaDinamica
     {
         return m_dados[pos];
     }
+
+    // imprime elementos da lista
+    void ImprimeElementos()
+    {
+        for (int i = 0; i < m_tamanho; i++)
+            std::cout << m_dados[i] << std::endl;
+
+    }
+
+    int GetTamanho() { return m_tamanho; }
+    int GetCapacidade() { return m_capacidade; }
 
     private:
     T* m_dados; // armazena os dados do array dinamico
