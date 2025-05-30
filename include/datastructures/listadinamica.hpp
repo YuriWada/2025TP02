@@ -59,6 +59,29 @@ class ListaDinamica
         m_dados[0] = element;
     }
 
+    // Insere elemento em dada posicao
+    void InsereElemento(const T& element, int pos)
+    {
+        // verifica tamanho da lista
+        if(m_tamanho >= m_capacidade)
+            redimensionar(m_tamanho == 0 ? 1 : m_capacidade+2);
+
+        // adiciona elemento no inicio
+        if (pos == 0)
+            InsereInicio(element);
+        // adiciona elemento no final
+        else if (pos == m_tamanho)
+            InsereFinal(element);
+        // caso contrario
+        else
+        {
+            m_tamanho++;
+            for (int i = m_tamanho-1; i > pos; i--)
+                m_dados[i] = m_dados[i-1];
+            m_dados[pos] = element;
+        }
+    }
+
     // remove e retorna o ultimo elemento
     T RemoveFinal()
     {
@@ -72,6 +95,21 @@ class ListaDinamica
         return ultimoElemento;    
     }
 
+    // remove e retorna elemento da posicao pos
+    T RemoveElemento(int pos)
+    {
+        if ((pos <= 0) || (pos >= m_tamanho))
+            throw "Erro: Posicao invalida!";
+
+        T placeHolder = m_dados[pos]; // variavel para armazenar o elemento
+
+        for (int i = pos; i < m_tamanho-1; i++)
+            m_dados[i] = m_dados[i+1];
+        
+        m_tamanho--;
+        return placeHolder;
+    }
+
     // retorna elemento da posicao
     T& BuscaElemento(int pos)
     {
@@ -83,9 +121,10 @@ class ListaDinamica
     {
         for (int i = 0; i < m_tamanho; i++)
             std::cout << m_dados[i] << std::endl;
-
     }
 
+    void LimparLista() { m_tamanho = 0; }
+    bool ListaVazia() { return m_tamanho == 0; } 
     int GetTamanho() { return m_tamanho; }
     int GetCapacidade() { return m_capacidade; }
 
