@@ -1,5 +1,5 @@
-#ifndef ListaDinamica_H
-#define ListaDinamica_H
+#ifndef LISTADINAMICA_HPP
+#define LISTADINAMICA_HPP
 
 #include <iostream>
 
@@ -134,4 +134,4 @@ class ListaDinamica
     int m_capacidade; // capacidade max de elementos no array
 };
 
-#endif /* ListaDinamica_H */
+#endif /* ListaDinamica_HPP */

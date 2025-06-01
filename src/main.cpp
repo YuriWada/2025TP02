@@ -1,4 +1,5 @@
 #include "../include/datastructures/listadinamica.hpp"
+#include "../include/datastructures/lista.hpp"
 #include <iostream>
 #include <string>
 
