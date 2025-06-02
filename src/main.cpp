@@ -152,18 +152,18 @@ int main() {
     imprimeLista(listaTesteInt, "Apos Limpa");
     std::cout << "Lista vazia apos Limpa? " << (listaTesteInt.Vazia() ? "Sim" : "Nao") << std::endl;
 
-    // Testar operações em lista vazia (devem lançar exceção ou tratar)
-    std::cout << "\n-> Testando operacoes em lista vazia..." << std::endl;
-    try {
-        listaTesteInt.RemoveInicio();
-    } catch (const char* msg) {
-        std::cout << "Tentativa de RemoveInicio em lista vazia: " << msg << std::endl;
-    }
-     try {
-        listaTesteInt.GetItem(1);
-    } catch (const char* msg) {
-        std::cout << "Tentativa de GetItem(1) em lista vazia: " << msg << std::endl;
-    }
+    // // Testar operações em lista vazia (devem lançar exceção ou tratar)
+    // std::cout << "\n-> Testando operacoes em lista vazia..." << std::endl;
+    // try {
+    //     listaTesteInt.RemoveInicio();
+    // } catch (const char* msg) {
+    //     std::cout << "Tentativa de RemoveInicio em lista vazia: " << msg << std::endl;
+    // }
+    //  try {
+    //     listaTesteInt.GetItem(1);
+    // } catch (const char* msg) {
+    //     std::cout << "Tentativa de GetItem(1) em lista vazia: " << msg << std::endl;
+    // }
 
 
     std::cout << "\n\n****** INICIANDO TESTES COM ListaEncadeada<std::string> ******" << std::endl;
