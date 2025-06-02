@@ -1,3 +1,8 @@
+/**
+ * Codigo adaptado das notas de aula
+ * Principal adaptação: classe transformada em Template
+ */
+
 #ifndef CELULA_HPP
 #define CELULA_HPP
 
@@ -7,13 +12,14 @@ template <typename T>
 class Celula
 {
     public:
-    Celula() : prox(nullptr) {};
+    Celula() : item(), prox(nullptr) {};
+    Celula(const T& valorItem) : item(valorItem), prox(nullptr) {};
 
     private:
     T item;
-    T* prox;
+    Celula<T>* prox;
 
-    friend class ListaEncadeada;
+    friend class ListaEncadeada<T>;
 };
 
 #endif /* CELULA_HPP */

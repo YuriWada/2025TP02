@@ -1,3 +1,8 @@
+/**
+ * Codigo adaptado das notas de aula
+ * Principal adaptação: classe transformada em Template
+ */
+
 #ifndef LISTADINAMICA_HPP
 #define LISTADINAMICA_HPP
 

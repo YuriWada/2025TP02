@@ -1,3 +1,8 @@
+/**
+ * Codigo adaptado das notas de aula
+ * Principal adaptação: classe transformada em Template
+ */
+
 #ifndef LISTA_HPP
 #define LISTA_HPP
 
@@ -16,7 +21,7 @@ class Lista
     virtual T RemoveInicio() = 0;
     virtual T RemoveFinal() = 0;
     virtual T RemovePosicao(int pos) = 0;
-    virtual T Pesquisa(T chave) = 0;
+    virtual T Pesquisa(const T& chave, T& itemEncontrado_out) = 0;
     virtual void Imprime() = 0;
     virtual void Limpa() = 0;
 

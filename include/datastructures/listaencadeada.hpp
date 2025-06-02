@@ -1,3 +1,8 @@
+/**
+ * Codigo adaptado das notas de aula
+ * Principal adaptação: classe transformada em Template
+ */
+
 #ifndef LISTAENCADEADA_HPP
 #define LISTAENCADEADA_HPP
 
@@ -9,9 +14,9 @@ class ListaEncadeada : public Lista
 {
     public:
     // construtor
-    ListaEncadeada() : Lista()
+    ListaEncadeada() : Lista()<T>
     {
-        primeiro = new Celula();
+        primeiro = new Celula<T>();
         ultimo = primeiro;
     }
 
@@ -25,7 +30,7 @@ class ListaEncadeada : public Lista
     // retorna Item
     T GetItem(int pos)
     {
-        Celula* p;
+        Celula<T>* p;
         p = Posiciona(pos);
         return p->item;
     }
@@ -33,7 +38,7 @@ class ListaEncadeada : public Lista
     // posiciona item
     void SetItem(const T& item, int pos)
     {
-        Celula* p;
+        Celula<T>* p;
         p = Posiciona(pos);
         p->item = item;
     }
@@ -41,8 +46,8 @@ class ListaEncadeada : public Lista
     // insere item no inicio da lista
     void InsereInicio(const T& item)
     {
-        Celula* nova;
-        nova = new Celula();
+        Celula<T>* nova;
+        nova = new Celula<T>();
         nova->item = item;
         nova->prox = primeiro->prox;
         primeiro->prox = nova;
@@ -55,8 +60,8 @@ class ListaEncadeada : public Lista
     // insere item no final da lista
     void InsereFinal(const T& item)
     {
-        Celula* nova;
-        nova = new Celula();
+        Celula<T>* nova;
+        nova = new Celula<T>();
         nova->item = item;
         ultimo->prox = nova;
         ultimo = nova;
@@ -66,13 +71,14 @@ class ListaEncadeada : public Lista
     // insere item em posicao pos
     void InserePosicao(const T& item, int pos)
     {
-        Celula *p, *nova;
+        Celula<T> *p, *nova;
 
-        p = Posiciona(pos, true); // posiciona na celula anterior
+        p = Posiciona(pos, true); // posiciona na celula<T> anterior
 
-        nova = new Celula();
+        nova = new Celula<T>();
         nova->item = item;
-        nova->prox = nova;
+        nova->prox = p->prox;
+        p->prox = nova;
         tamanho++;
 
         if(nova->prox == NULL)
@@ -82,8 +88,7 @@ class ListaEncadeada : public Lista
     // remove e retorna item do inicio
     T RemoveInicio()
     {
-        T& aux;
-        Celula *p;
+        Celula<T> *p;
 
         if (tamanho == 0)
             throw "Erro: lista vazia!";
@@ -95,7 +100,7 @@ class ListaEncadeada : public Lista
         if (primeiro->prox == NULL)
             ultimo = primeiro;
 
-        aux = p->item;
+        T aux = p->item;
         delete p;
 
         return aux;
@@ -104,18 +109,17 @@ class ListaEncadeada : public Lista
     // remove e retorna item do final
     T RemoveFinal()
     {
-        T& aux;
-        Celula *p;
+        Celula<T> *p;
 
         if (tamanho == 0)
             throw "Erro: lista vazia!";
 
-        // posiciona p na celula anterior a ultima
+        // posiciona p na celula<T> anterior a ultima
         p = Posiciona(tamanho, true);
 
         p->prox = NULL;
         tamanho--;
-        aux = ultimo->item;
+        T aux = ultimo->item;
         delete ultimo;
 
         return aux;
@@ -124,8 +128,7 @@ class ListaEncadeada : public Lista
     // remove e retorna item da posicao pos
     T RemovePosicao(int pos)
     {
-        T& aux;
-        Celula *p, *q;
+        Celula<T> *p, *q;
 
         if (tamanho == 0)
             throw "Erro: lista vazia";
@@ -134,7 +137,8 @@ class ListaEncadeada : public Lista
         q = p->prox;
         p->prox = q->prox;
         tamanho--;
-        aux = q->item;
+        T aux = q->item;
+        delete q;
 
         if (p->prox == NULL)
             ultimo = p;
@@ -143,40 +147,37 @@ class ListaEncadeada : public Lista
     }
 
     // pesquisa item com uma determinada chave
-    T Pesquisa(T chave)
+    bool Pesquisa(const T& chave, T& itemEncontrado_out)
     {
-        T& aux;
-        Celula *p;
-
         if (tamanho == 0)
-            throw "Erro: lista vazia";
-
+            return false;
+        
+        Celula<T> *p;
         p = primeiro->prox;
-        aux.SetChave(-1);
 
         while (p != NULL)
         {
-            if (p->item.GetChave() == chave)
+            if (p->item == chave)
             {
-                aux = p->item;
-                break;
+                itemEncontrado_out = p->item;
+                return true;
             }
             p = p->prox;
         }
 
-        return aux;
+        return false;
     }
 
     // imprimir elementos da lista encadeada
     // para me ajudar a debugar
     void Imprime()
     {
-        Celula *p;
+        Celula<T> *p;
         p = primeiro->prox;
         
         while(p != NULL)
         {
-            p->item.Imprime(); //o item da celula tem que ter este metodo
+            p->item.Imprime(); //o item da celula<T> tem que ter este metodo
             p = p->prox;
         }
 
@@ -186,7 +187,7 @@ class ListaEncadeada : public Lista
 
     void Limpa()
     {
-        Celula *p;
+        Celula<T> *p;
 
         p = primeiro->prox;
 
@@ -202,19 +203,19 @@ class ListaEncadeada : public Lista
     }
 
     private:
-    Celula *primeiro;
-    Celula *ultimo;
+    Celula<T> *primeiro;
+    Celula<T> *ultimo;
     
     // funcao auxiliar para posicionar apontador
-    // em uma determinada posicao (celula) da lista
-    Celula* Posiciona(int pos, bool antes=false)
+    // em uma determinada posicao (celula<T>) da lista
+    Celula<T>* Posiciona(int pos, bool antes=false)
     {
-        Celula* p; int i;
+        Celula<T>* p; int i;
 
         if ((pos > tamanho) || (pos <= 0))
             throw "Erro: posicao invalida!";
 
-        // posiciona na celula anterior a desejada
+        // posiciona na celula<T> anterior a desejada
         p = primeiro;
         for (i = 1; i < pos; i++)
             p = p->prox;
