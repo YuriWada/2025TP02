@@ -6,7 +6,8 @@
 #ifndef CELULA_HPP
 #define CELULA_HPP
 
-#include "listaencadeada.hpp"
+template <typename U>
+class ListaEncadeada;
 
 template <typename T>
 class Celula

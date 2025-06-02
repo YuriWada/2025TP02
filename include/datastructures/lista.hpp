@@ -21,7 +21,7 @@ class Lista
     virtual T RemoveInicio() = 0;
     virtual T RemoveFinal() = 0;
     virtual T RemovePosicao(int pos) = 0;
-    virtual T Pesquisa(const T& chave, T& itemEncontrado_out) = 0;
+    virtual bool Pesquisa(const T& chave, T& itemEncontrado_out) = 0;
     virtual void Imprime() = 0;
     virtual void Limpa() = 0;
 
