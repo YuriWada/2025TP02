@@ -1,6 +1,7 @@
 #ifndef LISTAENCADEADA_HPP
 #define LISTAENCADEADA_HPP
 
+#include <iostream>
 #include "celula.hpp"
 
 template <typename T>
@@ -22,7 +23,7 @@ class ListaEncadeada : public Lista
     }
 
     // retorna Item
-    virtual T GetItem(int pos)
+    T GetItem(int pos)
     {
         Celula* p;
         p = Posiciona(pos);
@@ -30,7 +31,7 @@ class ListaEncadeada : public Lista
     }
 
     // posiciona item
-    virtual void SetItem(const T& item, int pos)
+    void SetItem(const T& item, int pos)
     {
         Celula* p;
         p = Posiciona(pos);
@@ -38,7 +39,7 @@ class ListaEncadeada : public Lista
     }
 
     // insere item no inicio da lista
-    virtual void InsereInicio(const T& item)
+    void InsereInicio(const T& item)
     {
         Celula* nova;
         nova = new Celula();
@@ -52,7 +53,7 @@ class ListaEncadeada : public Lista
     }
 
     // insere item no final da lista
-    virtual void InsereFinal(const T& item)
+    void InsereFinal(const T& item)
     {
         Celula* nova;
         nova = new Celula();
@@ -63,26 +64,153 @@ class ListaEncadeada : public Lista
     }
 
     // insere item em posicao pos
-    virtual void InserePosicao(const T& item, int pos)
+    void InserePosicao(const T& item, int pos)
     {
-        
+        Celula *p, *nova;
+
+        p = Posiciona(pos, true); // posiciona na celula anterior
+
+        nova = new Celula();
+        nova->item = item;
+        nova->prox = nova;
+        tamanho++;
+
+        if(nova->prox == NULL)
+            ultimo = nova;
     }
-    virtual T RemoveInicio();
-    virtual T RemoveFinal();
-    virtual T RemovePosicao(int pos);
-    virtual T Pesquisa(T chave);
-    virtual void Imprime();
-    virtual void Limpa();
+
+    // remove e retorna item do inicio
+    T RemoveInicio()
+    {
+        T& aux;
+        Celula *p;
+
+        if (tamanho == 0)
+            throw "Erro: lista vazia!";
+
+        p = primeiro->prox;
+        primeiro->prox = p->prox;
+        tamanho--;
+
+        if (primeiro->prox == NULL)
+            ultimo = primeiro;
+
+        aux = p->item;
+        delete p;
+
+        return aux;
+    }
+
+    // remove e retorna item do final
+    T RemoveFinal()
+    {
+        T& aux;
+        Celula *p;
+
+        if (tamanho == 0)
+            throw "Erro: lista vazia!";
+
+        // posiciona p na celula anterior a ultima
+        p = Posiciona(tamanho, true);
+
+        p->prox = NULL;
+        tamanho--;
+        aux = ultimo->item;
+        delete ultimo;
+
+        return aux;
+    }
+
+    // remove e retorna item da posicao pos
+    T RemovePosicao(int pos)
+    {
+        T& aux;
+        Celula *p, *q;
+
+        if (tamanho == 0)
+            throw "Erro: lista vazia";
+
+        p = Posiciona(pos, true);
+        q = p->prox;
+        p->prox = q->prox;
+        tamanho--;
+        aux = q->item;
+
+        if (p->prox == NULL)
+            ultimo = p;
+
+        return aux;
+    }
+
+    // pesquisa item com uma determinada chave
+    T Pesquisa(T chave)
+    {
+        T& aux;
+        Celula *p;
+
+        if (tamanho == 0)
+            throw "Erro: lista vazia";
+
+        p = primeiro->prox;
+        aux.SetChave(-1);
+
+        while (p != NULL)
+        {
+            if (p->item.GetChave() == chave)
+            {
+                aux = p->item;
+                break;
+            }
+            p = p->prox;
+        }
+
+        return aux;
+    }
+
+    // imprimir elementos da lista encadeada
+    // para me ajudar a debugar
+    void Imprime()
+    {
+        Celula *p;
+        p = primeiro->prox;
+        
+        while(p != NULL)
+        {
+            p->item.Imprime(); //o item da celula tem que ter este metodo
+            p = p->prox;
+        }
+
+        std::endl;
+    }
+
+
+    void Limpa()
+    {
+        Celula *p;
+
+        p = primeiro->prox;
+
+        while(p != NULL)
+        {
+            primeiro->prox = p->prox;
+            delete p;
+            p = primeiro->prox;
+        }
+
+        ultimo = primeiro;
+        tamanho = 0;
+    }
 
     private:
-    Celula primeiro;
-    Celula ultimo;
+    Celula *primeiro;
+    Celula *ultimo;
     
     // funcao auxiliar para posicionar apontador
     // em uma determinada posicao (celula) da lista
-    T* Posiciona(int pos, bool antes=false)
+    Celula* Posiciona(int pos, bool antes=false)
     {
         Celula* p; int i;
+
         if ((pos > tamanho) || (pos <= 0))
             throw "Erro: posicao invalida!";
 
