@@ -21,6 +21,7 @@ class Celula
     Celula<T>* prox;
 
     friend class ListaEncadeada<T>;
+    friend class PilhaEncadeada<T>;
 };
 
 #endif /* CELULA_HPP */
