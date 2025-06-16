@@ -1,0 +1,133 @@
+#include <iostream>
+#include <string>
+#include <stdexcept>
+
+#include "../include/datastructures/listadinamica.hpp" // Dependência do Min-Heap
+#include "../include/datastructures/min-heap.hpp"
+
+struct Paciente {
+    int nivelDeUrgencia; // Menor número = mais urgente
+    std::string nome;
+
+    // Sobrecarga do operator< para que o Min-Heap saiba como comparar Pacientes
+    bool operator<(const Paciente& outro) const {
+        return this->nivelDeUrgencia < outro.nivelDeUrgencia;
+    }
+};
+
+// Sobrecarga do operator<< para imprimir Pacientes
+std::ostream& operator<<(std::ostream& os, const Paciente& p) {
+    os << "Paciente(" << p.nome << ", Urgencia: " << p.nivelDeUrgencia << ")";
+    return os;
+}
+
+
+// Função principal de teste para o Min-Heap
+void testarMinHeap() {
+    std::cout << "****** INICIANDO TESTES COM MinHeap<int> ******" << std::endl;
+
+    MinHeap<int> filaPrioridade;
+
+    // --- Teste 1: Fila Inicialmente Vazia ---
+    std::cout << "\n--- Teste 1: Fila Inicialmente Vazia ---" << std::endl;
+    std::cout << "Fila vazia? " << (filaPrioridade.estaVazia() ? "Sim (OK)" : "Nao (FALHA)") << std::endl;
+    std::cout << "Tamanho da fila: " << filaPrioridade.getTamanho() << " (Esperado: 0)" << std::endl;
+
+    // --- Teste 2: Exceções em Fila Vazia ---
+    std::cout << "\n--- Teste 2: Excecoes em Fila Vazia ---" << std::endl;
+    try {
+        filaPrioridade.extraiMin();
+        std::cout << "extraiMin() em fila vazia: FALHA (nao lancou excecao)" << std::endl;
+    } catch (const std::runtime_error& e) {
+        std::cout << "extraiMin() em fila vazia: OK (capturado: '" << e.what() << "')" << std::endl;
+    }
+    try {
+        filaPrioridade.getMin();
+        std::cout << "getMin() em fila vazia: FALHA (nao lancou excecao)" << std::endl;
+    } catch (const std::runtime_error& e) {
+        std::cout << "getMin() em fila vazia: OK (capturado: '" << e.what() << "')" << std::endl;
+    }
+
+    // --- Teste 3: Inserindo Elementos (Verificando o Topo) ---
+    std::cout << "\n--- Teste 3: Inserindo Elementos ---" << std::endl;
+    std::cout << "Inserindo 20..." << std::endl;
+    filaPrioridade.insere(20);
+    std::cout << "Topo (getMin): " << filaPrioridade.getMin() << " (Esperado: 20)" << std::endl;
+    std::cout << "Tamanho: " << filaPrioridade.getTamanho() << " (Esperado: 1)" << std::endl;
+
+    std::cout << "\nInserindo 10..." << std::endl;
+    filaPrioridade.insere(10);
+    std::cout << "Topo (getMin): " << filaPrioridade.getMin() << " (Esperado: 10)" << std::endl;
+    std::cout << "Tamanho: " << filaPrioridade.getTamanho() << " (Esperado: 2)" << std::endl;
+
+    std::cout << "\nInserindo 5..." << std::endl;
+    filaPrioridade.insere(5);
+    std::cout << "Topo (getMin): " << filaPrioridade.getMin() << " (Esperado: 5)" << std::endl;
+    std::cout << "Tamanho: " << filaPrioridade.getTamanho() << " (Esperado: 3)" << std::endl;
+
+    std::cout << "\nInserindo 30..." << std::endl;
+    filaPrioridade.insere(30);
+    std::cout << "Topo (getMin): " << filaPrioridade.getMin() << " (Esperado: 5)" << std::endl; // Topo não deve mudar
+    std::cout << "Tamanho: " << filaPrioridade.getTamanho() << " (Esperado: 4)" << std::endl;
+
+    std::cout << "\nInserindo 2..." << std::endl;
+    filaPrioridade.insere(2);
+    std::cout << "Topo (getMin): " << filaPrioridade.getMin() << " (Esperado: 2)" << std::endl;
+    std::cout << "Tamanho: " << filaPrioridade.getTamanho() << " (Esperado: 5)" << std::endl;
+    std::cout << "Heap populado com: 20, 10, 5, 30, 2" << std::endl;
+
+    // --- Teste 4: Extraindo Elementos (Verificando a Ordem) ---
+    // Este é o teste mais importante. Os elementos devem sair em ordem crescente.
+    std::cout << "\n--- Teste 4: Extraindo Elementos em Ordem ---" << std::endl;
+    try {
+        std::cout << "Extraindo o minimo... " << filaPrioridade.extraiMin() << " (Esperado: 2)" << std::endl;
+        std::cout << "Novo topo: " << filaPrioridade.getMin() << " (Esperado: 5)" << std::endl;
+        std::cout << "Tamanho: " << filaPrioridade.getTamanho() << std::endl;
+
+        std::cout << "\nExtraindo o minimo... " << filaPrioridade.extraiMin() << " (Esperado: 5)" << std::endl;
+        std::cout << "Novo topo: " << filaPrioridade.getMin() << " (Esperado: 10)" << std::endl;
+        std::cout << "Tamanho: " << filaPrioridade.getTamanho() << std::endl;
+
+        std::cout << "\nExtraindo o minimo... " << filaPrioridade.extraiMin() << " (Esperado: 10)" << std::endl;
+        std::cout << "Novo topo: " << filaPrioridade.getMin() << " (Esperado: 20)" << std::endl;
+        std::cout << "Tamanho: " << filaPrioridade.getTamanho() << std::endl;
+
+        std::cout << "\nExtraindo o minimo... " << filaPrioridade.extraiMin() << " (Esperado: 20)" << std::endl;
+        std::cout << "Novo topo: " << filaPrioridade.getMin() << " (Esperado: 30)" << std::endl;
+        std::cout << "Tamanho: " << filaPrioridade.getTamanho() << std::endl;
+
+        std::cout << "\nExtraindo o minimo... " << filaPrioridade.extraiMin() << " (Esperado: 30)" << std::endl;
+        std::cout << "Fila esta vazia? " << (filaPrioridade.estaVazia() ? "Sim (OK)" : "Nao (FALHA)") << std::endl;
+        std::cout << "Tamanho: " << filaPrioridade.getTamanho() << std::endl;
+
+    } catch(const std::runtime_error& e) {
+        std::cout << "FALHA: Excecao inesperada durante extracao: " << e.what() << std::endl;
+    }
+
+    // --- Teste 5: Teste com tipo customizado (Paciente) ---
+    std::cout << "\n\n****** INICIANDO TESTES COM MinHeap<Paciente> ******" << std::endl;
+    MinHeap<Paciente> filaDePacientes;
+
+    std::cout << "Inserindo pacientes em ordem aleatoria de urgencia..." << std::endl;
+    filaDePacientes.insere({5, "Caso Leve"});
+    filaDePacientes.insere({2, "Ferimento Grave"});
+    filaDePacientes.insere({1, "Parada Cardiaca"});
+    filaDePacientes.insere({4, "Fratura Simples"});
+    filaDePacientes.insere({3, "Queimadura"});
+
+    std::cout << "Tamanho da fila de pacientes: " << filaDePacientes.getTamanho() << std::endl;
+    std::cout << "Proximo paciente a ser atendido (getMin): " << filaDePacientes.getMin() << std::endl;
+    
+    std::cout << "\nAtendendo pacientes em ordem de urgencia (extraindo do Min-Heap):" << std::endl;
+    while (!filaDePacientes.estaVazia()) {
+        std::cout << "Atendido: " << filaDePacientes.extraiMin() << std::endl;
+    }
+
+    std::cout << "\n****** FIM DOS TESTES DO MIN-HEAP ******" << std::endl;
+}
+
+int main() {
+    testarMinHeap();
+    
+    return 0;
+}

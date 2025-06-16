@@ -9,6 +9,9 @@
 template <typename U>
 class ListaEncadeada;
 
+template <typename V>
+class PilhaEncadeada;
+
 template <typename T>
 class Celula
 {

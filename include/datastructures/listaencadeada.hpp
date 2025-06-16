@@ -15,24 +15,24 @@
 template <typename T>
 class Lista
 {
-    public:
+public:
     Lista() { tamanho = 0; }
-    virtual T GetItem(int pos) = 0;
-    virtual void SetItem(const T& item, int pos) = 0;
-    virtual void InsereInicio(const T& item) = 0;
-    virtual void InsereFinal(const T& item) = 0;
-    virtual void InserePosicao(const T& item, int pos) = 0;
+    virtual T GetItem(int pos) const = 0;
+    virtual void SetItem(const T &item, int pos) = 0;
+    virtual void InsereInicio(const T &item) = 0;
+    virtual void InsereFinal(const T &item) = 0;
+    virtual void InserePosicao(const T &item, int pos) = 0;
     virtual T RemoveInicio() = 0;
     virtual T RemoveFinal() = 0;
     virtual T RemovePosicao(int pos) = 0;
-    virtual bool Pesquisa(const T& chave, T& itemEncontrado_out) = 0;
-    virtual void Imprime() = 0;
+    virtual bool Pesquisa(const T &chave, T &itemEncontrado_out) const = 0;
+    virtual void Imprime() const = 0;
     virtual void Limpa() = 0;
 
-    int GetTamanho() { return tamanho; }
-    bool Vazia() { return tamanho == 0; }
+    int GetTamanho() const { return tamanho; }
+    bool Vazia() const { return tamanho == 0; }
 
-    protected:
+protected:
     int tamanho;
 };
 
@@ -55,62 +55,68 @@ public:
     }
 
     // Retorna Item
-    T GetItem(int pos)
+    T GetItem(int pos) const override
     {
-        if (pos <= 0 || pos > this->tamanho) { // Validação explícita para GetItem
+        if (pos <= 0 || pos > this->tamanho)
+        { // Validação explícita para GetItem
             throw std::out_of_range("GetItem: Posicao invalida!");
         }
-        Celula<T>* p;
+        const Celula<T> *p;
         p = this->Posiciona(pos); // antes=false por padrão
         return p->item;
     }
 
     // Posiciona item
-    void SetItem(const T& item, int pos)
+    void SetItem(const T &item, int pos) override
     {
-        if (pos <= 0 || pos > this->tamanho) { // Validação explícita para SetItem
+        if (pos <= 0 || pos > this->tamanho)
+        { // Validação explícita para SetItem
             throw std::out_of_range("SetItem: Posicao invalida!");
         }
-        Celula<T>* p;
+        Celula<T> *p;
         p = this->Posiciona(pos); // antes=false por padrão
         p->item = item;
     }
 
     // Insere item no inicio da lista
-    void InsereInicio(const T& item)
+    void InsereInicio(const T &item) override
     {
-        Celula<T>* nova = new Celula<T>(item); // Usando construtor de Celula com item
+        Celula<T> *nova = new Celula<T>(item); // Usando construtor de Celula com item
         nova->prox = this->primeiro->prox;
         this->primeiro->prox = nova;
         this->tamanho++;
 
-        if (this->tamanho == 1) { // Se a lista estava vazia, o novo nó também é o último
+        if (this->tamanho == 1)
+        { // Se a lista estava vazia, o novo nó também é o último
             this->ultimo = nova;
         }
     }
 
     // Insere item no final da lista
-    void InsereFinal(const T& item)
+    void InsereFinal(const T &item) override
     {
-        Celula<T>* nova = new Celula<T>(item); // Usando construtor de Celula com item
+        Celula<T> *nova = new Celula<T>(item); // Usando construtor de Celula com item
         this->ultimo->prox = nova;
         this->ultimo = nova;
         this->tamanho++;
     }
 
     // Insere item em posicao pos
-    void InserePosicao(const T& item, int pos)
+    void InserePosicao(const T &item, int pos) override
     {
         // Validação de 'pos' para inserção: 1 a tamanho+1
-        if (pos <= 0 || pos > this->tamanho + 1) {
+        if (pos <= 0 || pos > this->tamanho + 1)
+        {
             throw std::out_of_range("InserePosicao: Posicao invalida!");
         }
 
-        if (pos == 1) {
+        if (pos == 1)
+        {
             this->InsereInicio(item);
             return;
         }
-        if (pos == this->tamanho + 1) {
+        if (pos == this->tamanho + 1)
+        {
             this->InsereFinal(item);
             return;
         }
@@ -127,18 +133,19 @@ public:
     }
 
     // Remove e retorna item do inicio
-    T RemoveInicio()
+    T RemoveInicio() override
     {
         if (this->tamanho == 0)
             throw std::runtime_error("RemoveInicio: Lista vazia!");
 
-        Celula<T>* p_remover = this->primeiro->prox;
+        Celula<T> *p_remover = this->primeiro->prox;
         T itemCopiado = p_remover->item;
 
         this->primeiro->prox = p_remover->prox;
         this->tamanho--;
 
-        if (this->tamanho == 0) { // Se a lista ficou vazia
+        if (this->tamanho == 0)
+        { // Se a lista ficou vazia
             this->ultimo = this->primeiro;
         }
         // Se p_remover era o ultimo, e a lista não ficou vazia,
@@ -151,48 +158,56 @@ public:
     }
 
     // Remove e retorna item do final
-    T RemoveFinal()
+    T RemoveFinal() override
     {
         if (this->tamanho == 0)
             throw std::runtime_error("RemoveFinal: Lista vazia!");
 
         T itemRemovido;
-        Celula<T>* noADeletar = this->ultimo;
+        Celula<T> *noADeletar = this->ultimo;
         itemRemovido = noADeletar->item;
 
-        if (this->tamanho == 1) { // ou this->primeiro->prox == this->ultimo
+        if (this->tamanho == 1)
+        {                        // ou this->primeiro->prox == this->ultimo
             delete this->ultimo; // Deleta o único nó de dados
             this->primeiro->prox = nullptr;
             this->ultimo = this->primeiro; // 'ultimo' volta a ser o sentinela
-        } else {
-            Celula<T>* penultimoNo = this->primeiro;
+        }
+        else
+        {
+            Celula<T> *penultimoNo = this->primeiro;
             // Encontra o nó ANTES de 'ultimo'
-            while (penultimoNo->prox != this->ultimo) {
+            while (penultimoNo->prox != this->ultimo)
+            {
                 penultimoNo = penultimoNo->prox;
             }
-            delete this->ultimo; // Deleta o nó que era o último
+            delete this->ultimo;          // Deleta o nó que era o último
             this->ultimo = penultimoNo;   // O penúltimo nó agora é o último
             this->ultimo->prox = nullptr; // Garante que o novo último nó aponte para NULL
         }
-        
+
         this->tamanho--;
         return itemRemovido;
     }
 
     // Remove e retorna item da posicao pos
-    T RemovePosicao(int pos)
+    T RemovePosicao(int pos) override
     {
-        if (pos <= 0 || pos > this->tamanho) {
+        if (pos <= 0 || pos > this->tamanho)
+        {
             throw std::out_of_range("RemovePosicao: Posicao invalida!");
         }
-        if (this->tamanho == 0) { // seguro
-             throw std::runtime_error("RemovePosicao: Lista vazia!");
+        if (this->tamanho == 0)
+        { // seguro
+            throw std::runtime_error("RemovePosicao: Lista vazia!");
         }
 
-        if (pos == 1) {
+        if (pos == 1)
+        {
             return this->RemoveInicio();
         }
-        if (pos == this->tamanho) {
+        if (pos == this->tamanho)
+        {
             return this->RemoveFinal();
         }
 
@@ -200,10 +215,10 @@ public:
         Celula<T> *p_anterior, *q_remover;
         p_anterior = this->Posiciona(pos, true); // p_anterior é o nó ANTES da posição 'pos'
         q_remover = p_anterior->prox;            // q_remover é o nó na posição 'pos'
-        
+
         T itemCopiado = q_remover->item;
-        p_anterior->prox = q_remover->prox;    // Nó p_anterior agora aponta para o sucessor de q_remover
-        
+        p_anterior->prox = q_remover->prox; // Nó p_anterior agora aponta para o sucessor de q_remover
+
         delete q_remover;
         this->tamanho--;
         // 'ultimo' não muda a menos que 'pos' fosse o último (tratado por RemoveFinal)
@@ -211,15 +226,17 @@ public:
     }
 
     // Pesquisa item com uma determinada chave
-    bool Pesquisa(const T& chave, T& itemEncontrado_out)
+    bool Pesquisa(const T &chave, T &itemEncontrado_out) const override
     {
         if (this->tamanho == 0)
             return false;
-        
-        Celula<T> *p = this->primeiro->prox;
 
-        while (p != nullptr) {
-            if (p->item == chave) { // Requer que T tenha operator==
+        const Celula<T> *p = this->primeiro->prox;
+
+        while (p != nullptr)
+        {
+            if (p->item == chave)
+            {                                 // Requer que T tenha operator==
                 itemEncontrado_out = p->item; // Faz cópia
                 return true;
             }
@@ -229,19 +246,22 @@ public:
     }
 
     // Imprimir elementos da lista encadeada
-    void Imprime()
+    void Imprime() const override
     {
-        if (this->Vazia()) { // Usa o método Vazia() herdado
+        if (this->Vazia())
+        { // Usa o método Vazia() herdado
             std::cout << "Lista esta vazia." << std::endl;
             return;
         }
 
-        Celula<T>* p = this->primeiro->prox;
+        const Celula<T> *p = this->primeiro->prox;
 
         std::cout << "Conteudo da lista: [ ";
-        while (p != nullptr) {
+        while (p != nullptr)
+        {
             std::cout << p->item; // Requer que T tenha operator<< com std::ostream
-            if (p->prox != nullptr) {
+            if (p->prox != nullptr)
+            {
                 std::cout << ", ";
             }
             p = p->prox;
@@ -249,15 +269,16 @@ public:
         std::cout << " ]" << std::endl;
     }
 
-    void Limpa()
+    void Limpa() override
     {
         Celula<T> *p_atual = this->primeiro->prox;
         Celula<T> *p_proximo;
 
-        while(p_atual != nullptr) {
+        while (p_atual != nullptr)
+        {
             p_proximo = p_atual->prox; // Guarda o próximo
-            delete p_atual;           // Deleta o atual
-            p_atual = p_proximo;      // Avança para o próximo
+            delete p_atual;            // Deleta o atual
+            p_atual = p_proximo;       // Avança para o próximo
         }
         this->primeiro->prox = nullptr; // Importante
         this->ultimo = this->primeiro;
@@ -267,29 +288,50 @@ public:
 private:
     Celula<T> *primeiro; // Nó sentinela (cabeçalho)
     Celula<T> *ultimo;   // Ponteiro para o último nó real da lista (ou para 'primeiro' se vazia)
-    
-    // Funcao auxiliar para posicionar apontador
+
+    // Funcao auxiliar para posicionar apontador (Esta permite modificação)
     // Retorna o nó na 'pos' (se antes=false) ou o nó ANTERIOR à 'pos' (se antes=true)
     // 'pos' é 1-indexada.
-    Celula<T>* Posiciona(int pos, bool antes = false)
+    Celula<T> *Posiciona(int pos, bool antes = false)
     {
-        if (pos <= 0) {
-             throw std::out_of_range("Posiciona: Posicao deve ser > 0");
+        if (pos <= 0)
+        {
+            throw std::out_of_range("Posiciona: Posicao deve ser > 0");
         }
 
-        Celula<T>* p = this->primeiro;
-        // Para chegar na célula ANTERIOR à posição 'pos', iteramos 'pos-1' vezes
-        // Para chegar na célula DA posição 'pos', iteramos 'pos' vezes a partir do sentinela
+        Celula<T> *p = this->primeiro;
         int iteracoes = antes ? (pos - 1) : pos;
 
-        for (int i = 0; i < iteracoes; ++i) {
-            if (p->prox == nullptr) { // Se a lista acabar antes de atingir as iterações
+        for (int i = 0; i < iteracoes; ++i)
+        {
+            if (p == nullptr || p->prox == nullptr)
+            {
                 throw std::out_of_range("Posiciona: Posicao fora dos limites da lista (muito grande)");
             }
             p = p->prox;
         }
-        // Se 'antes' for true, p é o nó anterior à 'pos'.
-        // Se 'antes' for false, p é o nó na 'pos'.
+        return p;
+    }
+
+    // esta função é constante, não permite modificações, serve apenas para leitura
+    const Celula<T> *Posiciona(int pos, bool antes = false) const
+    {
+        if (pos <= 0)
+        {
+            throw std::out_of_range("Posiciona: Posicao deve ser > 0");
+        }
+
+        const Celula<T> *p = this->primeiro;
+        int iteracoes = antes ? (pos - 1) : pos;
+
+        for (int i = 0; i < iteracoes; ++i)
+        {
+            if (p == nullptr || p->prox == nullptr)
+            {
+                throw std::out_of_range("Posiciona: Posicao fora dos limites da lista (muito grande)");
+            }
+            p = p->prox;
+        }
         return p;
     }
 };

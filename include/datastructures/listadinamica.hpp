@@ -121,17 +121,22 @@ class ListaDinamica
         return m_dados[pos];
     }
 
+    const T& BuscaElemento(int pos) const
+    {
+        return m_dados[pos];
+    }
+
     // imprime elementos da lista
-    void ImprimeElementos()
+    void ImprimeElementos() const
     {
         for (int i = 0; i < m_tamanho; i++)
             std::cout << m_dados[i] << std::endl;
     }
 
     void LimparLista() { m_tamanho = 0; }
-    bool ListaVazia() { return m_tamanho == 0; } 
-    int GetTamanho() { return m_tamanho; }
-    int GetCapacidade() { return m_capacidade; }
+    bool ListaVazia() const { return m_tamanho == 0; } 
+    int GetTamanho() const { return m_tamanho; }
+    int GetCapacidade() const { return m_capacidade; }
 
     private:
     T* m_dados; // armazena os dados do array dinamico

@@ -1,0 +1,116 @@
+/* 
+* Testes da classe PilhaEncadeada
+*
+*/
+
+#include <iostream>
+#include <string>
+#include <stdexcept>
+
+#include "../include/datastructures/pilha.hpp" 
+#include "../include/datastructures/celula.hpp" 
+
+// Função principal de teste para a Pilha Encadeada
+void testarPilhaEncadeada() {
+    std::cout << "****** INICIANDO TESTES COM PilhaEncadeada<int> ******" << std::endl;
+
+    PilhaEncadeada<int> pilha;
+
+    // --- Teste 1: Estado Inicial da Pilha ---
+    std::cout << "\n--- Teste 1: Pilha Inicialmente Vazia ---" << std::endl;
+    std::cout << "Pilha esta vazia? " << (pilha.Vazia() ? "Sim (OK)" : "Nao (FALHA)") << std::endl;
+    std::cout << "Tamanho da pilha: " << pilha.GetTamanho() << " (Esperado: 0)" << std::endl;
+
+    // --- Teste 2: Operações em Pilha Vazia ---
+    std::cout << "\n--- Teste 2: Excecoes em Pilha Vazia ---" << std::endl;
+    try {
+        pilha.Desempilha();
+        std::cout << "desempilha() em pilha vazia: FALHA (nao lancou excecao)" << std::endl;
+    } catch (const std::runtime_error& e) {
+        std::cout << "desempilha() em pilha vazia: OK (capturado: '" << e.what() << "')" << std::endl;
+    }
+    try {
+        pilha.GetTopo();
+        std::cout << "getTopo() em pilha vazia: FALHA (nao lancou excecao)" << std::endl;
+    } catch (const std::runtime_error& e) {
+        std::cout << "getTopo() em pilha vazia: OK (capturado: '" << e.what() << "')" << std::endl;
+    }
+
+    // --- Teste 3: Empilhando Elementos (Push) ---
+    std::cout << "\n--- Teste 3: Empilhando Elementos ---" << std::endl;
+    std::cout << "Empilhando 10..." << std::endl;
+    pilha.Empilha(10);
+    std::cout << "Pilha esta vazia? " << (pilha.Vazia() ? "Sim (FALHA)" : "Nao (OK)") << std::endl;
+    std::cout << "Tamanho: " << pilha.GetTamanho() << " (Esperado: 1)" << std::endl;
+    std::cout << "Topo: " << pilha.GetTopo() << " (Esperado: 10)" << std::endl;
+
+    std::cout << "\nEmpilhando 20..." << std::endl;
+    pilha.Empilha(20);
+    std::cout << "Tamanho: " << pilha.GetTamanho() << " (Esperado: 2)" << std::endl;
+    std::cout << "Topo: " << pilha.GetTopo() << " (Esperado: 20)" << std::endl;
+
+    std::cout << "\nEmpilhando 30..." << std::endl;
+    pilha.Empilha(30);
+    std::cout << "Tamanho: " << pilha.GetTamanho() << " (Esperado: 3)" << std::endl;
+    std::cout << "Topo: " << pilha.GetTopo() << " (Esperado: 30)" << std::endl;
+    std::cout << "Estado conceitual da Pilha: Topo -> [30, 20, 10]" << std::endl;
+
+    // --- Teste 4: Desempilhando Elementos (Pop) ---
+    std::cout << "\n--- Teste 4: Desempilhando Elementos (LIFO) ---" << std::endl;
+    try {
+        int valorDesempilhado = pilha.Desempilha();
+        std::cout << "Valor desempilhado: " << valorDesempilhado << " (Esperado: 30)" << std::endl;
+        std::cout << "Tamanho apos desempilhar: " << pilha.GetTamanho() << " (Esperado: 2)" << std::endl;
+        std::cout << "Novo topo: " << pilha.GetTopo() << " (Esperado: 20)" << std::endl;
+
+        valorDesempilhado = pilha.Desempilha();
+        std::cout << "\nValor desempilhado: " << valorDesempilhado << " (Esperado: 20)" << std::endl;
+        std::cout << "Tamanho apos desempilhar: " << pilha.GetTamanho() << " (Esperado: 1)" << std::endl;
+        std::cout << "Novo topo: " << pilha.GetTopo() << " (Esperado: 10)" << std::endl;
+
+        valorDesempilhado = pilha.Desempilha();
+        std::cout << "\nValor desempilhado: " << valorDesempilhado << " (Esperado: 10)" << std::endl;
+        std::cout << "Tamanho apos desempilhar: " << pilha.GetTamanho() << " (Esperado: 0)" << std::endl;
+        std::cout << "Pilha esta vazia? " << (pilha.Vazia() ? "Sim (OK)" : "Nao (FALHA)") << std::endl;
+
+    } catch (const std::runtime_error& e) {
+        std::cout << "FALHA: Excecao inesperada durante desempilhamento: " << e.what() << std::endl;
+    }
+
+    // --- Teste 5: Limpando a Pilha ---
+    std::cout << "\n--- Teste 5: Metodo Limpa ---" << std::endl;
+    std::cout << "Repopulando a pilha com 5, 15, 25 para teste de Limpa()..." << std::endl;
+    pilha.Empilha(5);
+    pilha.Empilha(15);
+    pilha.Empilha(25);
+    std::cout << "Tamanho antes de Limpa(): " << pilha.GetTamanho() << " (Esperado: 3)" << std::endl;
+    std::cout << "Chamando Limpa()..." << std::endl;
+    pilha.Limpa();
+    std::cout << "Tamanho depois de Limpa(): " << pilha.GetTamanho() << " (Esperado: 0)" << std::endl;
+    std::cout << "Pilha esta vazia? " << (pilha.Vazia() ? "Sim (OK)" : "Nao (FALHA)") << std::endl;
+
+    // --- Teste 6: Teste com tipo std::string ---
+    std::cout << "\n\n****** INICIANDO TESTES COM PilhaEncadeada<std::string> ******" << std::endl;
+    PilhaEncadeada<std::string> pilhaString;
+
+    std::cout << "Empilhando \"Primeiro\", \"Segundo\", \"Terceiro\"..." << std::endl;
+    pilhaString.Empilha("Primeiro");
+    pilhaString.Empilha("Segundo");
+    pilhaString.Empilha("Terceiro");
+    std::cout << "Tamanho: " << pilhaString.GetTamanho() << " (Esperado: 3)" << std::endl;
+    std::cout << "Topo: \"" << pilhaString.GetTopo() << "\" (Esperado: \"Terceiro\")" << std::endl;
+    
+    std::cout << "\nDesempilhando strings..." << std::endl;
+    std::cout << "Saiu: \"" << pilhaString.Desempilha() << "\". Novo topo: \"" << pilhaString.GetTopo() << "\"" << std::endl;
+    std::cout << "Saiu: \"" << pilhaString.Desempilha() << "\". Novo topo: \"" << pilhaString.GetTopo() << "\"" << std::endl;
+    std::cout << "Saiu: \"" << pilhaString.Desempilha() << "\"." << std::endl;
+    std::cout << "Pilha de strings esta vazia? " << (pilhaString.Vazia() ? "Sim (OK)" : "Nao (FALHA)") << std::endl;
+
+    std::cout << "\n****** FIM DOS TESTES DA PILHA ******" << std::endl;
+}
+
+int main() {
+    testarPilhaEncadeada();
+
+    return 0;
+}
