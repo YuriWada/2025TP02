@@ -2,108 +2,119 @@
 #include <string>
 #include <stdexcept>
 
-#include "../include/datastructures/listaencadeada.hpp"
-#include "../include/datastructures/pilha.hpp"
-#include "../include/datastructures/listadinamica.hpp"
-#include "../include/tad/pacote.hpp"
+// Incluindo a classe que vamos testar e suas dependências
+#include "../include/tad/redelogistica.hpp"
 #include "../include/tad/armazem.hpp"
+#include "../include/datastructures/listaencadeada.hpp"
 
-void testarArmazem()
+// Função auxiliar para imprimir uma rota de forma legível
+void imprimirRota(const std::string &titulo, ListaEncadeada<int> &rota)
 {
-    std::cout << "****** INICIANDO TESTES COM A CLASSE Armazem ******" << std::endl;
-
-    // --- Parâmetros da Simulação para o Teste ---
-    const int ID_ARMAZEM_ATUAL = 0;
-    const int ID_SECAO_DESTINO = 1;
-    const double CUSTO_REMOCAO = 1.0;
-    const double TEMPO_ATUAL = 200.0;
-
-    // --- Teste 1: Configuração e Armazenamento Simples ---
-    std::cout << "\n--- Teste 1: Setup e Armazenamento Simples ---" << std::endl;
-    Armazem armazem(ID_ARMAZEM_ATUAL);
-    armazem.adicionarConexaoDeSaida(ID_SECAO_DESTINO);
-    std::cout << "Armazem " << armazem.getID() << " criado com secao para o armazem " << ID_SECAO_DESTINO << std::endl;
-
-    Pacote p1(1, 0, 3, 10.0); // Pacote antigo, alta prioridade
-    Pacote p2(2, 0, 3, 50.0); // Pacote novo, baixa prioridade
-
-    std::cout << "Armazenando pacote 1 (T=10)..." << std::endl;
-    armazem.armazenarPacote(&p1, ID_SECAO_DESTINO, 100.0);
-    std::cout << "Armazenando pacote 2 (T=50)..." << std::endl;
-    armazem.armazenarPacote(&p2, ID_SECAO_DESTINO, 110.0);
-
-    std::cout << "Armazem tem pacotes armazenados? " << (armazem.temPacotesArmazenados() ? "Sim (OK)" : "Nao (FALHA)") << std::endl;
-    std::cout << "Pilha da secao " << ID_SECAO_DESTINO << " agora contem (do topo para o fundo): [Pacote 2, Pacote 1]" << std::endl;
-
-    // --- Teste 2: Recuperação de Pacotes (Prioridade vs LIFO) ---
-    std::cout << "\n--- Teste 2: Recuperando 1 pacote (Capacidade = 1) ---" << std::endl;
-    std::cout << "Regras: Capacidade=1, Prioridade para mais antigo, Custo de Remocao=" << CUSTO_REMOCAO << std::endl;
-
-    // A pilha é [p2, p1]. O mais prioritário é p1. Para pegá-lo, é preciso remover p2.
-    ListaDinamica<PacoteComAtraso> selecionados = armazem.recuperarPacotesParaTransporte(
-        ID_SECAO_DESTINO, 1, CUSTO_REMOCAO, TEMPO_ATUAL);
-
-    std::cout << "\n--- Verificando Resultado da Recuperacao ---" << std::endl;
-    std::cout << "Numero de pacotes selecionados: " << selecionados.GetTamanho() << " (Esperado: 1)" << std::endl;
-
-    if (selecionados.GetTamanho() > 0)
+    std::cout << titulo;
+    if (rota.Vazia())
     {
-        PacoteComAtraso &resultado = selecionados.BuscaElemento(0);
-        std::cout << "  - Pacote selecionado ID: " << resultado.pacote->getID() << " (Esperado: 1, o mais antigo)" << std::endl;
-
-        // No desempilhamento, p2 saiu primeiro (0 pacotes em cima), p1 saiu em segundo (1 pacote em cima).
-        double atraso_esperado = 1 * CUSTO_REMOCAO;
-        std::cout << "  - Atraso de manipulacao: " << resultado.atraso_de_manipulacao << " (Esperado: " << atraso_esperado << ")" << std::endl;
+        std::cout << " (Rota Vazia ou Inexistente)" << std::endl;
+        return;
     }
 
-    std::cout << "\nArmazem tem pacotes armazenados apos a recuperacao? " << (armazem.temPacotesArmazenados() ? "Sim (OK)" : "Nao (FALHA)") << std::endl;
-    std::cout << "  (Esperado: Sim, pois o pacote 2 foi rearmazenado)" << std::endl;
-
-    // --- Teste 3: Esvaziando a Seção ---
-    std::cout << "\n--- Teste 3: Esvaziando a secao restante ---" << std::endl;
-    // Agora só o pacote 2 está na seção
-    selecionados = armazem.recuperarPacotesParaTransporte(ID_SECAO_DESTINO, 2, CUSTO_REMOCAO, TEMPO_ATUAL + 1);
-    std::cout << "PACOTES SELECIONADOS:" << std::endl;
-    if (selecionados.ListaVazia())
+    // Imprime a rota no formato: 0 -> 1 -> 3 -> 4
+    for (int i = 1; i <= rota.GetTamanho(); ++i)
     {
-        std::cout << "  (Nenhum)" << std::endl;
+        std::cout << rota.GetItem(i) << (i == rota.GetTamanho() ? "" : " -> ");
+    }
+    std::cout << std::endl;
+}
+
+// Função principal de teste para a RedeLogistica
+void testarRedeLogistica()
+{
+    std::cout << "****** INICIANDO TESTES COM A CLASSE RedeLogistica ******" << std::endl;
+
+    // --- Teste 1: Construção do Grafo ---
+    std::cout << "\n--- Teste 1: Criando uma rede com 6 armazens ---" << std::endl;
+    // O grafo terá armazéns com IDs de 0 a 5
+    RedeLogistica rede(6);
+    std::cout << "Numero de armazens na rede: " << rede.getNumArmazens() << " (Esperado: 6)" << std::endl;
+
+    std::cout << "\n--- Adicionando conexoes (arestas) ---" << std::endl;
+    // Vamos criar o seguinte mapa:
+    // 0 -- 1 -- 2
+    //      |
+    //      3 -- 4
+    // 5 (isolado)
+    rede.adicionarConexao(0, 1);
+    rede.adicionarConexao(1, 2);
+    rede.adicionarConexao(1, 3);
+    rede.adicionarConexao(3, 4);
+
+    // Supondo que você tem um método para imprimir a lista de adjacência
+    // rede.imprimirGrafo(); // Descomente se você implementou este método para debug
+
+    // --- Teste 2: Encontrando Rotas com BFS ---
+    std::cout << "\n--- Teste 2: Testando o calculo de rotas (BFS) ---" << std::endl;
+
+    // Cenário A: Caminho com múltiplos saltos
+    ListaEncadeada<int> rota_0_para_4 = rede.encontrarRotaBFS(0, 4);
+    imprimirRota("Rota de 0 para 4: ", rota_0_para_4);
+    std::cout << "(Esperado: 0 -> 1 -> 3 -> 4)" << std::endl;
+
+    // Cenário B: Caminho reverso
+    ListaEncadeada<int> rota_4_para_0 = rede.encontrarRotaBFS(4, 0);
+    imprimirRota("Rota de 4 para 0: ", rota_4_para_0);
+    std::cout << "(Esperado: 4 -> 3 -> 1 -> 0)" << std::endl;
+
+    // Cenário C: Caminho direto (vizinhos)
+    ListaEncadeada<int> rota_1_para_2 = rede.encontrarRotaBFS(1, 2);
+    imprimirRota("Rota de 1 para 2: ", rota_1_para_2);
+    std::cout << "(Esperado: 1 -> 2)" << std::endl;
+
+    // Cenário D: Caminho de um nó para ele mesmo
+    ListaEncadeada<int> rota_3_para_3 = rede.encontrarRotaBFS(3, 3);
+    imprimirRota("Rota de 3 para 3: ", rota_3_para_3);
+    std::cout << "(Esperado: 3)" << std::endl;
+
+    // Cenário E: Sem caminho possível (nó isolado)
+    ListaEncadeada<int> rota_0_para_5 = rede.encontrarRotaBFS(0, 5);
+    imprimirRota("Rota de 0 para 5: ", rota_0_para_5);
+    std::cout << "(Esperado: Rota Vazia ou Inexistente)" << std::endl;
+
+    // Cenário F: Nó de destino inválido
+    ListaEncadeada<int> rota_0_para_99 = rede.encontrarRotaBFS(0, 99);
+    imprimirRota("Rota de 0 para 99 (invalido): ", rota_0_para_99);
+    std::cout << "(Esperado: Rota Vazia ou Inexistente)" << std::endl;
+
+    // --- Teste 3: Acessando os Objetos Armazem ---
+    std::cout << "\n--- Teste 3: Testando acesso aos armazens ---" << std::endl;
+    Armazem *armazem_ptr = rede.getArmazemPorIndice(3);
+    if (armazem_ptr != nullptr)
+    {
+        std::cout << "getArmazemPorIndice(3) retornou um armazem com ID: " << armazem_ptr->getID() << " (OK)" << std::endl;
     }
     else
     {
-        for (int i = 0; i < selecionados.GetTamanho(); i++)
-        {
-            // Acessa o struct PacoteComAtraso na posição i
-            PacoteComAtraso resultado = selecionados.BuscaElemento(i);
-
-            // Imprime as informações do pacote e seu atraso
-            std::cout << "  - Pacote ID: " << resultado.pacote->getID()
-                      << " | Atraso de Manipulacao: " << resultado.atraso_de_manipulacao
-                      << std::endl;
-        }
+        std::cout << "getArmazemPorIndice(3) retornou nullptr (FALHA)" << std::endl;
     }
 
-    std::cout << "\n--- Verificando Resultado da Recuperacao Final ---" << std::endl;
-    std::cout << "Numero de pacotes selecionados: " << selecionados.GetTamanho() << " (Esperado: 1)" << std::endl;
-
-    if (selecionados.GetTamanho() > 0)
+    armazem_ptr = rede.getArmazemPorIndice(10);
+    if (armazem_ptr == nullptr)
     {
-        PacoteComAtraso &resultado = selecionados.BuscaElemento(0);
-        std::cout << "  - Pacote selecionado ID: " << resultado.pacote->getID() << " (Esperado: 2)" << std::endl;
-
-        // p2 estava no topo, então não há custo de manipulação para removê-lo.
-        double atraso_esperado = 0 * CUSTO_REMOCAO;
-        std::cout << "  - Atraso de manipulacao: " << resultado.atraso_de_manipulacao << " (Esperado: " << atraso_esperado << ")" << std::endl;
+        std::cout << "getArmazemPorIndice(10) retornou nullptr como esperado (OK)" << std::endl;
+    }
+    else
+    {
+        std::cout << "getArmazemPorIndice(10) nao retornou nullptr (FALHA)" << std::endl;
     }
 
-    std::cout << "\nArmazem tem pacotes armazenados apos a recuperacao final? " << armazem.temPacotesArmazenados() << std::endl;
-    std::cout << "\nArmazem tem pacotes armazenados apos a recuperacao final? " << (armazem.temPacotesArmazenados() ? "Sim (FALHA)" : "Não (OK)") << std::endl;
-
-    std::cout << "\n****** FIM DOS TESTES DO ARMAZEM ******" << std::endl;
+    std::cout << "\n****** FIM DOS TESTES DA REDE LOGISTICA ******" << std::endl;
 }
 
 int main()
 {
-    testarArmazem();
+    testarRedeLogistica();
+
+    // Seus outros testes...
+    // testarArmazem();
+    // testarPacote();
 
     return 0;
 }
