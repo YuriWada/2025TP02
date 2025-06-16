@@ -14,7 +14,7 @@ class Celula
 {
     public:
     Celula() : item(), prox(nullptr) {};
-    Celula(const T& valorItem) : item(valorItem), prox(nullptr) {};
+    Celula(const T& valorItem) : item(valorItem), prox(nullptr) {}; // funcao util
 
     private:
     T item;
