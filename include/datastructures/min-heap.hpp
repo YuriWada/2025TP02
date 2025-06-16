@@ -1,6 +1,5 @@
-// MinhaFilaDePrioridade.hpp
-#ifndef MINHAFILADEPRIORIDADE_HPP
-#define MINHAFILADEPRIORIDADE_HPP
+#ifndef MINHEAP_HPP
+#define MINHEAP_HPP
 
 #include <stdexcept>
 #include "listadinamica.hpp"
@@ -121,4 +120,4 @@ public:
     }
 };
 
-#endif /* MINHAFILADEPRIORIDADE_HPP */
+#endif /* MINHEAP_HPP */

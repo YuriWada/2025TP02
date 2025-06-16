@@ -5,10 +5,8 @@
 #include <sstream>
 #include <iomanip>
 #include <cstdint>
-
 #include "pacote.hpp"
 
-// Forward declarations para evitar inclusões circulares
 class Armazem;
 
 enum class TipoEvento
@@ -21,14 +19,13 @@ enum class TipoEvento
 struct DadosEvento
 {
     Pacote *pacote_ptr = nullptr;
-    int id_armazem_origem = -1;
-    int id_armazem_destino = -1;
+    int id_armazem_1 = -1; // Para CHEGADA: armazem_chegada. Para TRANSPORTE: origem.
+    int id_armazem_2 = -1; // Para TRANSPORTE: destino.
 };
 
 class Evento
 {
 private:
-    // Constrói a chave de 13 dígitos para ordenação
     uint64_t construirChave(double tempo, TipoEvento tipo, const DadosEvento &dados)
     {
         std::stringstream ss;
@@ -40,8 +37,8 @@ private:
         }
         else
         { // TRANSPORTE
-            ss << std::setw(2) << std::setfill('0') << dados.id_armazem_origem;
-            ss << std::setw(3) << std::setfill('0') << dados.id_armazem_destino;
+            ss << std::setw(2) << std::setfill('0') << dados.id_armazem_1;
+            ss << std::setw(3) << std::setfill('0') << dados.id_armazem_2;
         }
         ss << static_cast<int>(tipo);
         return std::stoull(ss.str());
@@ -53,12 +50,12 @@ public:
     TipoEvento tipo;
     DadosEvento dados;
 
-    // Construtor para eventos de Pacote
-    Evento(double tempo, Pacote *p)
+    Evento(double tempo, Pacote *p, int armazem_chegada_id)
     {
         this->timestamp = tempo;
         this->tipo = TipoEvento::CHEGADA_PACOTE;
         this->dados.pacote_ptr = p;
+        this->dados.id_armazem_1 = armazem_chegada_id; // Guarda o ID do armazém de chegada
         this->chave = construirChave(tempo, this->tipo, this->dados);
     }
 
@@ -67,8 +64,8 @@ public:
     {
         this->timestamp = tempo;
         this->tipo = TipoEvento::TRANSPORTE_DIARIO;
-        this->dados.id_armazem_origem = origem;
-        this->dados.id_armazem_destino = destino;
+        this->dados.id_armazem_1 = origem;
+        this->dados.id_armazem_2 = destino;
         this->chave = construirChave(tempo, this->tipo, this->dados);
     }
 
