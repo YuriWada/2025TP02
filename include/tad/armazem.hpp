@@ -5,6 +5,7 @@
 #include "pacote.hpp"
 #include "../datastructures/pilha.hpp"
 #include "../datastructures/listadinamica.hpp"
+#include "../utils/logger.hpp"
 
 // struct pra guardar a pilha de uma secao do armazem
 struct SecaoLIFO

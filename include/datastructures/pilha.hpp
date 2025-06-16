@@ -14,7 +14,6 @@ public:
     int GetTamanho() { return this->tamanho; }
     bool Vazia() const
     {
-        std::cout << "--- DEBUG Pilha::Vazia() chamada. Tamanho = " << this->tamanho << " ---" << std::endl;
         return this->tamanho == 0;
     }
 

@@ -58,8 +58,10 @@ void Armazem::armazenarPacote(Pacote *pacote, int id_proximo_armazem_na_rota, do
         pacote->setEstado(EstadoPacote::ARMAZENADO, tempo_atual);
         secao->pilha_pacotes.Empilha(pacote);
 
-        std::cout << tempo_atual << " pac " << pacote->getID() << " armazenado em "
-                  << this->getID() << " " << id_proximo_armazem_na_rota << std::endl;
+        // chama a função de log
+        std::stringstream msg;
+        msg << "armazenado em " << formatarID(this->getID(), 3) << " na secao " << formatarID(id_proximo_armazem_na_rota, 3);
+        logEvento(tempo_atual, pacote->getID(), msg.str());
     }
     else
     {
@@ -115,8 +117,10 @@ ListaDinamica<PacoteComAtraso> Armazem::recuperarPacotesParaTransporte(
     {
         Pacote *p = pacotes_ordem_lifo.BuscaElemento(i);
         p->setEstado(EstadoPacote::REMOVIDO_PARA_TRANSPORTE, tempo_atual);
-        std::cout << tempo_atual << " pac " << p->getID() << " removido de "
-                  << this->getID() << " " << id_secao_destino << std::endl;
+
+        std::stringstream msg;
+        msg << "removido de " << this->getID() << " na secao " << id_secao_destino;
+        logEvento(tempo_atual + (i * custoremocao), p->getID(), msg.str());
     }
 
     // 3. cria uma copia pra ordenar por prioridade (pacote mais antigo primeiro)
@@ -159,8 +163,10 @@ ListaDinamica<PacoteComAtraso> Armazem::recuperarPacotesParaTransporte(
         Pacote *p = pacotes_a_rearmazanar.BuscaElemento(i);
         secao->pilha_pacotes.Empilha(p);
         p->setEstado(EstadoPacote::ARMAZENADO, tempo_atual);
-        std::cout << tempo_atual << " pac " << p->getID() << " rearmazenado em "
-                  << this->getID() << " " << id_secao_destino << std::endl;
+
+        std::stringstream msg;
+        msg << "armazanado em " << this->getID() << " na secao " << id_secao_destino;
+        logEvento(tempo_atual, p->getID(), msg.str());
     }
 
     // retorna a lista de pacotes pro transporte

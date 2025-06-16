@@ -1,0 +1,84 @@
+#include <iostream>
+#include <string>
+#include <stdexcept>
+
+#include "../include/datastructures/listadinamica.hpp"
+#include "../include/datastructures/listaencadeada.hpp"
+#include "../include/tad/pacote.hpp"
+#include "../include/tad/transporte.hpp"
+
+// Função principal de teste para a classe Transporte
+void testarTransporte()
+{
+    std::cout << "****** INICIANDO TESTES COM O TAD Transporte ******" << std::endl;
+
+    // --- Teste 1: Criação e verificação de dados básicos ---
+    std::cout << "\n--- Teste 1: Criacao e Getters ---" << std::endl;
+
+    // Parâmetros para o teste
+    int origem_id = 0;
+    int destino_id = 2;
+    double partida_t = 101.0;
+    double chegada_t = 121.0;
+
+    // Criação do objeto
+    Transporte transporte_teste(origem_id, destino_id, partida_t, chegada_t);
+    std::cout << "Objeto Transporte criado para a rota 0 -> 2." << std::endl;
+
+    // Verificação dos dados iniciais usando os getters
+    std::cout << "Verificando ID de Origem... "
+              << (transporte_teste.getOrigemID() == origem_id ? "OK" : "FALHA") << std::endl;
+
+    std::cout << "Verificando ID de Destino... "
+              << (transporte_teste.getDestinoID() == destino_id ? "OK" : "FALHA") << std::endl;
+
+    std::cout << "Verificando Tempo de Partida... "
+              << (transporte_teste.getTempoPartida() == partida_t ? "OK" : "FALHA") << std::endl;
+
+    std::cout << "Verificando Tempo de Chegada... "
+              << (transporte_teste.getTempoChegadaPrevisto() == chegada_t ? "OK" : "FALHA") << std::endl;
+
+    std::cout << "Verificando se a lista de pacotes esta inicialmente vazia... "
+              << (transporte_teste.getPacotes().ListaVazia() ? "OK" : "FALHA") << std::endl;
+
+    // --- Teste 2: Adicionando e verificando pacotes ---
+    std::cout << "\n--- Teste 2: Adicionando Pacotes ---" << std::endl;
+
+    // Criação de pacotes de exemplo
+    Pacote p1(101, 0, 2, 98.0);
+    Pacote p2(102, 0, 2, 99.0);
+
+    // Adiciona os ponteiros dos pacotes ao objeto Transporte
+    transporte_teste.adicionarPacote(&p1);
+    transporte_teste.adicionarPacote(&p2);
+    std::cout << "Adicionados 2 pacotes ao transporte." << std::endl;
+
+    // Verificação da lista de pacotes
+    const auto &pacotes_no_transporte = transporte_teste.getPacotes();
+    std::cout << "Verificando tamanho da lista de pacotes... "
+              << (pacotes_no_transporte.GetTamanho() == 2 ? "OK" : "FALHA")
+              << " (Recebido: " << pacotes_no_transporte.GetTamanho() << ")" << std::endl;
+
+    if (pacotes_no_transporte.GetTamanho() == 2)
+    {
+        Pacote *p_resgatado1 = pacotes_no_transporte.BuscaElemento(0);
+        Pacote *p_resgatado2 = pacotes_no_transporte.BuscaElemento(1);
+
+        // Verifica se os ponteiros armazenados são os mesmos dos objetos originais
+        std::cout << "Verificando ponteiro do primeiro pacote... "
+                  << (p_resgatado1 == &p1 ? "OK" : "FALHA") << std::endl;
+
+        // Verifica se é possível acessar os dados do pacote através do ponteiro
+        std::cout << "Verificando ID do segundo pacote (via ponteiro)... "
+                  << (p_resgatado2->getID() == p2.getID() ? "OK" : "FALHA") << std::endl;
+    }
+
+    std::cout << "\n****** FIM DOS TESTES DO TRANSPORTE ******" << std::endl;
+}
+
+int main()
+{
+    testarTransporte();
+
+    return 0;
+}
