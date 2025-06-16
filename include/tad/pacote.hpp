@@ -41,9 +41,8 @@ public:
           m_estado_atual(EstadoPacote::NAO_POSTADO),
           m_timestamp_ultimo_evento(tempo_chegada), // O primeiro evento é a própria postagem
           m_tempo_armazenado_total(0.0),
-          m_tempo_em_transito_total(0.0)
-    {
-    }
+          m_tempo_em_transito_total(0.0) 
+          {}
 
     // Getters
     int getID() const { return m_id; }

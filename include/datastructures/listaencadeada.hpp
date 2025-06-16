@@ -46,12 +46,53 @@ public:
         this->primeiro = new Celula<T>();
         this->ultimo = this->primeiro;
     }
+    
+    // Construtor de Cópia
+    ListaEncadeada(const ListaEncadeada<T> &outra) : Lista<T>()
+    {
+        // Inicializa esta lista como vazia
+        this->primeiro = new Celula<T>();
+        this->ultimo = this->primeiro;
+
+        // Percorre a 'outra' lista e insere cada item nesta lista,
+        // criando uma cópia profunda dos dados.
+        Celula<T> *p = outra.primeiro->prox;
+        while (p != nullptr)
+        {
+            this->InsereFinal(p->item);
+            p = p->prox;
+        }
+    }
 
     // Destrutor
     ~ListaEncadeada()
     {
         this->Limpa();
         delete this->primeiro;
+    }
+
+    // Operador de Atribuição por Cópia (=)
+    ListaEncadeada<T> &operator=(const ListaEncadeada<T> &outra)
+    {
+        if (this == &outra)
+        {
+            return *this;
+        }
+
+        // Limpa a lista atual para evitar vazamento de memória
+        this->Limpa();
+
+        // Copia os elementos da 'outra' lista para esta,
+        //assim como o construtor de cópia faz.
+        Celula<T> *p = outra.primeiro->prox;
+        while (p != nullptr)
+        {
+            this->InsereFinal(p->item);
+            p = p->prox;
+        }
+
+        //Retorna uma referência para esta lista para permitir encadeamento
+        return *this;
     }
 
     // Retorna Item
@@ -168,7 +209,7 @@ public:
         itemRemovido = noADeletar->item;
 
         if (this->tamanho == 1)
-        {                        // ou this->primeiro->prox == this->ultimo
+        {// ou this->primeiro->prox == this->ultimo
             delete this->ultimo; // Deleta o único nó de dados
             this->primeiro->prox = nullptr;
             this->ultimo = this->primeiro; // 'ultimo' volta a ser o sentinela
@@ -181,8 +222,8 @@ public:
             {
                 penultimoNo = penultimoNo->prox;
             }
-            delete this->ultimo;          // Deleta o nó que era o último
-            this->ultimo = penultimoNo;   // O penúltimo nó agora é o último
+            delete this->ultimo;  // Deleta o nó que era o último
+            this->ultimo = penultimoNo; // O penúltimo nó agora é o último
             this->ultimo->prox = nullptr; // Garante que o novo último nó aponte para NULL
         }
 
@@ -214,7 +255,7 @@ public:
         // Remoção do meio
         Celula<T> *p_anterior, *q_remover;
         p_anterior = this->Posiciona(pos, true); // p_anterior é o nó ANTES da posição 'pos'
-        q_remover = p_anterior->prox;            // q_remover é o nó na posição 'pos'
+        q_remover = p_anterior->prox; // q_remover é o nó na posição 'pos'
 
         T itemCopiado = q_remover->item;
         p_anterior->prox = q_remover->prox; // Nó p_anterior agora aponta para o sucessor de q_remover
@@ -236,7 +277,7 @@ public:
         while (p != nullptr)
         {
             if (p->item == chave)
-            {                                 // Requer que T tenha operator==
+            { // Requer que T tenha operator==
                 itemEncontrado_out = p->item; // Faz cópia
                 return true;
             }
@@ -277,8 +318,8 @@ public:
         while (p_atual != nullptr)
         {
             p_proximo = p_atual->prox; // Guarda o próximo
-            delete p_atual;            // Deleta o atual
-            p_atual = p_proximo;       // Avança para o próximo
+            delete p_atual;// Deleta o atual
+            p_atual = p_proximo; // Avança para o próximo
         }
         this->primeiro->prox = nullptr; // Importante
         this->ultimo = this->primeiro;
@@ -287,7 +328,7 @@ public:
 
 private:
     Celula<T> *primeiro; // Nó sentinela (cabeçalho)
-    Celula<T> *ultimo;   // Ponteiro para o último nó real da lista (ou para 'primeiro' se vazia)
+    Celula<T> *ultimo;// Ponteiro para o último nó real da lista (ou para 'primeiro' se vazia)
 
     // Funcao auxiliar para posicionar apontador (Esta permite modificação)
     // Retorna o nó na 'pos' (se antes=false) ou o nó ANTERIOR à 'pos' (se antes=true)
