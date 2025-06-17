@@ -23,6 +23,11 @@ struct PacoteComAtraso
     double atraso_de_manipulacao;
 };
 
+struct ResultadoRecuperacao {
+    ListaDinamica<PacoteComAtraso> pacotes_para_transporte;
+    ListaDinamica<Pacote*> pacotes_a_rearmazanar;
+};
+
 // classe Armazem, que eh um vertice do grafo
 class Armazem
 {
@@ -43,17 +48,19 @@ public:
     // destrutor pra limpar a memoria das secoes
     ~Armazem();
 
+    ResultadoRecuperacao recuperarPacotesParaTransporte(
+        int id_secao_destino,
+        int capacidade_transporte,
+        double custoremocao,
+        double tempo_atual 
+    );
+
     // retorna o ID do armazem
     int getID() const;
 
     // metodos principais de operacao do armazem
     void adicionarConexaoDeSaida(int id_armazem_vizinho_destino);
     void armazenarPacote(Pacote *pacote, int id_proximo_armazem_na_rota, double tempo_atual);
-    ListaDinamica<PacoteComAtraso> recuperarPacotesParaTransporte(
-        int id_secao_destino,
-        int capacidade_transporte,
-        double custoremocao,
-        double tempo_atual);
     bool temPacotesArmazenados() const;
 };
 

@@ -47,28 +47,6 @@ void Armazem::adicionarConexaoDeSaida(int id_armazem_vizinho_destino)
     }
 }
 
-// poe o pacote na pilha (secao) certa
-void Armazem::armazenarPacote(Pacote *pacote, int id_proximo_armazem_na_rota, double tempo_atual)
-{
-    if (!pacote)
-        return;
-    SecaoLIFO *secao = getSecaoParaDestino(id_proximo_armazem_na_rota);
-    if (secao)
-    {
-        pacote->setEstado(EstadoPacote::ARMAZENADO, tempo_atual);
-        secao->pilha_pacotes.Empilha(pacote);
-
-        // chama a função de log
-        std::stringstream msg;
-        msg << "armazenado em " << formatarID(this->getID(), 3) << " na secao " << formatarID(id_proximo_armazem_na_rota, 3);
-        logEvento(tempo_atual, pacote->getID(), msg.str());
-    }
-    else
-    {
-        throw std::runtime_error("Erro: Tentativa de armazenar pacote para destino sem secao configurada.");
-    }
-}
-
 // funcao pra ordenar a lista de pacotes usando bubble sort
 void Armazem::ordenarPacotesPorPrioridade(ListaDinamica<Pacote *> &pacotes)
 {
@@ -92,85 +70,64 @@ void Armazem::ordenarPacotesPorPrioridade(ListaDinamica<Pacote *> &pacotes)
     }
 }
 
-// metodo principal, decide quem vai ser transportado
-ListaDinamica<PacoteComAtraso> Armazem::recuperarPacotesParaTransporte(
+void Armazem::armazenarPacote(Pacote* pacote, int id_proximo_armazem_na_rota, double tempo_atual) {
+    SecaoLIFO* secao = getSecaoParaDestino(id_proximo_armazem_na_rota);
+    if (secao) {
+        pacote->setEstado(EstadoPacote::ARMAZENADO, tempo_atual);
+        secao->pilha_pacotes.Empilha(pacote);
+    } else {
+        throw std::runtime_error("Erro: Tentativa de armazenar pacote para destino sem secao configurada.");
+    }
+}
+
+// Versão final e corrigida
+ResultadoRecuperacao Armazem::recuperarPacotesParaTransporte(
     int id_secao_destino,
     int capacidade_transporte,
     double custoremocao,
-    double tempo_atual)
-{
-    SecaoLIFO *secao = getSecaoParaDestino(id_secao_destino);
-    if (!secao || secao->pilha_pacotes.Vazia() || capacidade_transporte <= 0)
-    {
-        return ListaDinamica<PacoteComAtraso>();
+    double tempo_atual // Recebe o tempo para gerar logs corretos
+) {
+    ResultadoRecuperacao resultado;
+    SecaoLIFO* secao = getSecaoParaDestino(id_secao_destino);
+    if (!secao || secao->pilha_pacotes.Vazia() || capacidade_transporte <= 0) {
+        return resultado;
     }
 
-    // 1. tira tudo da pilha e poe numa lista temporaria pra poder olhar
-    ListaDinamica<Pacote *> pacotes_ordem_lifo;
-    while (!secao->pilha_pacotes.Vazia())
-    {
-        pacotes_ordem_lifo.InsereFinal(secao->pilha_pacotes.Desempilha());
+    ListaDinamica<Pacote*> pacotes_desempilhados;
+    while (!secao->pilha_pacotes.Vazia()) {
+        pacotes_desempilhados.InsereFinal(secao->pilha_pacotes.Desempilha());
     }
 
-    // 2. log pra dizer que os pacotes foram removidos pra triagem
-    for (int i = 0; i < pacotes_ordem_lifo.GetTamanho(); ++i)
-    {
-        Pacote *p = pacotes_ordem_lifo.BuscaElemento(i);
+    // ✨ GERA LOGS DE "REMOVIDO DE" AQUI ✨
+    for (int i = 0; i < pacotes_desempilhados.GetTamanho(); ++i) {
+        Pacote* p = pacotes_desempilhados.BuscaElemento(i);
         p->setEstado(EstadoPacote::REMOVIDO_PARA_TRANSPORTE, tempo_atual);
-
+        double tempo_remocao = tempo_atual + ((double)i * custoremocao);
         std::stringstream msg;
-        msg << "removido de " << this->getID() << " na secao " << id_secao_destino;
-        logEvento(tempo_atual + (i * custoremocao), p->getID(), msg.str());
+        msg << "removido de " << formatarID(this->getID(), 3) << " na secao " << formatarID(id_secao_destino, 3);
+        logEvento(tempo_remocao, p->getID(), msg.str());
     }
 
-    // 3. cria uma copia pra ordenar por prioridade (pacote mais antigo primeiro)
-    ListaDinamica<Pacote *> pacotes_ordenados = pacotes_ordem_lifo;
+    ListaDinamica<Pacote*> pacotes_ordenados = pacotes_desempilhados;
     this->ordenarPacotesPorPrioridade(pacotes_ordenados);
-
-    // 4. separa quem vai viajar e quem vai voltar pra pilha
-    ListaDinamica<PacoteComAtraso> pacotes_para_transporte;
-    ListaDinamica<Pacote *> pacotes_a_rearmazanar;
-
-    for (int i = 0; i < pacotes_ordenados.GetTamanho(); ++i)
-    {
-        Pacote *p_candidato = pacotes_ordenados.BuscaElemento(i);
-
-        if (i < capacidade_transporte)
-        {
-            // esse aqui vai ser transportado, calcula o custo
+    
+    for (int i = 0; i < pacotes_ordenados.GetTamanho(); ++i) {
+        Pacote* p_candidato = pacotes_ordenados.BuscaElemento(i);
+        if (i < capacidade_transporte) {
             int pacotes_em_cima = 0;
-            for (int j = 0; j < pacotes_ordem_lifo.GetTamanho(); ++j)
-            {
-                if (pacotes_ordem_lifo.BuscaElemento(j) == p_candidato)
-                {
+            for (int j = 0; j < pacotes_desempilhados.GetTamanho(); ++j) {
+                if (pacotes_desempilhados.BuscaElemento(j) == p_candidato) {
                     pacotes_em_cima = j;
                     break;
                 }
             }
             double atraso = (double)pacotes_em_cima * custoremocao;
-            pacotes_para_transporte.InsereFinal({p_candidato, atraso});
-        }
-        else
-        {
-            // esse aqui nao coube e vai ser rearmazenado
-            pacotes_a_rearmazanar.InsereFinal(p_candidato);
+            resultado.pacotes_para_transporte.InsereFinal({p_candidato, atraso});
+        } else {
+            resultado.pacotes_a_rearmazanar.InsereFinal(p_candidato);
         }
     }
-
-    // 5. quem nao foi selecionado volta pra pilha
-    for (int i = pacotes_a_rearmazanar.GetTamanho() - 1; i >= 0; --i)
-    {
-        Pacote *p = pacotes_a_rearmazanar.BuscaElemento(i);
-        secao->pilha_pacotes.Empilha(p);
-        p->setEstado(EstadoPacote::ARMAZENADO, tempo_atual);
-
-        std::stringstream msg;
-        msg << "armazanado em " << this->getID() << " na secao " << id_secao_destino;
-        logEvento(tempo_atual, p->getID(), msg.str());
-    }
-
-    // retorna a lista de pacotes pro transporte
-    return pacotes_para_transporte;
+    return resultado;
 }
 
 // verifica se tem algum pacote em qualquer secao do armazem

@@ -15,8 +15,7 @@ void Pacote::setRota(const ListaEncadeada<int> &rota_calculada)
 {
     this->m_rota = rota_calculada;
     // O primeiro item na rota é o próprio armazém de origem, então podemos removê-lo.
-    if (!this->m_rota.Vazia() && this->m_rota.GetItem(1) == this->m_origem_id)
-    {
+    if (!this->m_rota.Vazia() && this->m_rota.GetItem(1) == this->m_origem_id) {
         this->m_rota.RemoveInicio();
     }
 }
