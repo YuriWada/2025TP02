@@ -3,7 +3,7 @@
 #include "../../include/tad/armazem.hpp"
 #include <sstream>
 
-Escalonador::Escalonador(RedeLogistica *rede, int cap, double lat, double interv, double custo, int total_pacotes) : m_tempo_atual(0.0),
+Escalonador::Escalonador(RedeLogistica *rede, int cap, int lat, int interv, int custo, int total_pacotes) : m_tempo_atual(0.0),
                                                                                                                      m_rede_logistica_ptr(rede),
                                                                                                                      m_capacidade_transporte(cap),
                                                                                                                      m_latencia_transporte(lat),
@@ -89,7 +89,7 @@ void Escalonador::processarEvento(const Evento &evento)
             for (int i = 0; i < pacotes_a_enviar.GetTamanho(); ++i)
             {
                 PacoteComAtraso &item = pacotes_a_enviar.BuscaElemento(i);
-                double tempo_partida_real = m_tempo_atual + item.atraso_de_manipulacao;
+                int tempo_partida_real = m_tempo_atual + item.atraso_de_manipulacao;
 
                 std::stringstream msg_removido, msg_transito;
                 msg_removido << "removido de " << formatarID(origem_id, 3) << " na secao " << formatarID(destino_id, 3);
@@ -98,7 +98,7 @@ void Escalonador::processarEvento(const Evento &evento)
                 msg_transito << "em transito de " << formatarID(origem_id, 3) << " para " << formatarID(destino_id, 3);
                 logEvento(tempo_partida_real, item.pacote->getID(), msg_transito.str());
 
-                double tempo_chegada = tempo_partida_real + m_latencia_transporte;
+                int tempo_chegada = tempo_partida_real + m_latencia_transporte;
                 item.pacote->setEstado(EstadoPacote::CHEGADA_ESCALONADA, tempo_partida_real);
                 this->agendarEvento(Evento(tempo_chegada, item.pacote, destino_id));
             }
@@ -116,7 +116,7 @@ void Escalonador::processarEvento(const Evento &evento)
         }
 
         // Reagendar o próximo evento de transporte
-        double proximo_transporte = evento.timestamp + m_intervalo_transportes;
+        int proximo_transporte = evento.timestamp + m_intervalo_transportes;
         this->agendarEvento(Evento(proximo_transporte, origem_id, destino_id));
     }
 }

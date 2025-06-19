@@ -49,7 +49,7 @@ void Armazem::adicionarConexaoDeSaida(int id_armazem_vizinho_destino)
 }
 
 // poe o pacote na pilha (secao) certa e gera o log
-void Armazem::armazenarPacote(Pacote *pacote, int id_proximo_armazem_na_rota, double tempo_atual)
+void Armazem::armazenarPacote(Pacote *pacote, int id_proximo_armazem_na_rota, int tempo_atual)
 {
     SecaoLIFO *secao = getSecaoParaDestino(id_proximo_armazem_na_rota);
     if (secao)
@@ -90,8 +90,8 @@ void Armazem::ordenarPacotesPorPrioridade(ListaDinamica<Pacote *> &pacotes)
 ResultadoRecuperacao Armazem::recuperarPacotesParaTransporte(
     int id_secao_destino,
     int capacidade_transporte,
-    double custoremocao,
-    double tempo_atual // Recebe o tempo apenas para mudar o estado do pacote
+    int custoremocao,
+    int tempo_atual // Recebe o tempo apenas para mudar o estado do pacote
 )
 {
     ResultadoRecuperacao resultado;
@@ -133,7 +133,10 @@ ResultadoRecuperacao Armazem::recuperarPacotesParaTransporte(
                     break;
                 }
             }
-            double atraso = (double)pacotes_em_cima * custoremocao;
+            int atraso = 0;
+            if(!pacotes_em_cima) atraso = custoremocao;
+            else atraso = pacotes_em_cima * custoremocao;
+
             resultado.pacotes_para_transporte.InsereFinal({p_candidato, atraso});
         }
         else

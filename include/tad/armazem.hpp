@@ -19,7 +19,7 @@ struct SecaoLIFO
 struct PacoteComAtraso
 {
     Pacote *pacote;
-    double atraso_de_manipulacao; // ✨ CORREÇÃO: Faltava este membro crucial
+    int atraso_de_manipulacao; // ✨ CORREÇÃO: Faltava este membro crucial
 };
 
 // struct para agrupar os resultados da operação de recuperação
@@ -54,13 +54,13 @@ public:
 
     // metodos principais de operacao do armazem
     void adicionarConexaoDeSaida(int id_armazem_vizinho_destino);
-    void armazenarPacote(Pacote *pacote, int id_proximo_armazem_na_rota, double tempo_atual);
+    void armazenarPacote(Pacote *pacote, int id_proximo_armazem_na_rota, int tempo_atual);
     
     ResultadoRecuperacao recuperarPacotesParaTransporte(
         int id_secao_destino,
         int capacidade_transporte,
-        double custoremocao,
-        double tempo_atual
+        int custoremocao,
+        int tempo_atual
     );
     
     bool temPacotesArmazenados() const;

@@ -1,7 +1,7 @@
 #include "../../include/tad/transporte.hpp"
 
 // Implementação do Construtor
-Transporte::Transporte(int origem, int destino, double partida, double chegada) : m_id_origem(origem),
+Transporte::Transporte(int origem, int destino, int partida, int chegada) : m_id_origem(origem),
                                                                                   m_id_destino(destino),
                                                                                   m_tempo_partida(partida),
                                                                                   m_tempo_chegada_previsto(chegada)
@@ -28,12 +28,12 @@ int Transporte::getDestinoID() const
     return m_id_destino;
 }
 
-double Transporte::getTempoPartida() const
+int Transporte::getTempoPartida() const
 {
     return m_tempo_partida;
 }
 
-double Transporte::getTempoChegadaPrevisto() const
+int Transporte::getTempoChegadaPrevisto() const
 {
     return m_tempo_chegada_previsto;
 }

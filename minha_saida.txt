@@ -1,21 +1,21 @@
 0000010 pacote 000 armazenado em 000 na secao 001
 0000015 pacote 001 armazenado em 003 na secao 001
 0000020 pacote 002 armazenado em 002 na secao 001
-0000110 pacote 000 removido de 000 na secao 001
-0000110 pacote 000 em transito de 000 para 001
-0000110 pacote 002 removido de 002 na secao 001
-0000110 pacote 002 em transito de 002 para 001
-0000110 pacote 001 removido de 003 na secao 001
-0000110 pacote 001 em transito de 003 para 001
-0000130 pacote 000 armazenado em 001 na secao 002
-0000130 pacote 001 armazenado em 001 na secao 000
-0000130 pacote 002 armazenado em 001 na secao 003
-0000220 pacote 001 removido de 001 na secao 000
-0000220 pacote 001 em transito de 001 para 000
-0000220 pacote 000 removido de 001 na secao 002
-0000220 pacote 000 em transito de 001 para 002
-0000220 pacote 002 removido de 001 na secao 003
-0000220 pacote 002 em transito de 001 para 003
-0000240 pacote 000 entregue em 002
-0000240 pacote 001 entregue em 000
-0000240 pacote 002 entregue em 003
+0000111 pacote 000 removido de 000 na secao 001
+0000111 pacote 000 em transito de 000 para 001
+0000111 pacote 002 removido de 002 na secao 001
+0000111 pacote 002 em transito de 002 para 001
+0000111 pacote 001 removido de 003 na secao 001
+0000111 pacote 001 em transito de 003 para 001
+0000131 pacote 000 armazenado em 001 na secao 002
+0000131 pacote 001 armazenado em 001 na secao 000
+0000131 pacote 002 armazenado em 001 na secao 003
+0000221 pacote 001 removido de 001 na secao 000
+0000221 pacote 001 em transito de 001 para 000
+0000221 pacote 000 removido de 001 na secao 002
+0000221 pacote 000 em transito de 001 para 002
+0000221 pacote 002 removido de 001 na secao 003
+0000221 pacote 002 em transito de 001 para 003
+0000241 pacote 000 entregue em 002
+0000241 pacote 001 entregue em 000
+0000241 pacote 002 entregue em 003

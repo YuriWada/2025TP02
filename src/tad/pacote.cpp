@@ -30,10 +30,10 @@ void Pacote::avancarNaRota()
 }
 
 // Método para atualizar o estado do pacote e calcular estatísticas
-void Pacote::setEstado(EstadoPacote novo_estado, double tempo_do_evento)
+void Pacote::setEstado(EstadoPacote novo_estado, int tempo_do_evento)
 {
     // Calcula a duração do estado anterior
-    double duracao_no_estado_anterior = tempo_do_evento - this->m_timestamp_ultimo_evento;
+    int duracao_no_estado_anterior = tempo_do_evento - this->m_timestamp_ultimo_evento;
 
     // Acumula estatísticas com base no estado em que o pacote ESTAVA
     if (this->m_estado_atual == EstadoPacote::ARMAZENADO)

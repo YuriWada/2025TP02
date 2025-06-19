@@ -14,7 +14,7 @@ enum class TipoEvento {
 
 class Evento {
 private:
-    uint64_t construirChave(double tempo, TipoEvento tipo, Pacote* p, int origem, int destino) {
+    uint64_t construirChave(int tempo, TipoEvento tipo, Pacote* p, int origem, int destino) {
         std::stringstream ss;
         ss << std::setw(7) << std::setfill('0') << static_cast<long long>(tempo);
 
@@ -31,7 +31,7 @@ private:
 public:
     // --- Membros públicos diretos ---
     uint64_t chave;
-    double timestamp;
+    int timestamp;
     TipoEvento tipo;
     Pacote* pacote_ptr = nullptr;
     int armazem_id_1 = -1; // CHEGADA: armazem_chegada | TRANSPORTE: origem
@@ -41,7 +41,7 @@ public:
     Evento() : chave(0), timestamp(0), tipo(TipoEvento::CHEGADA_PACOTE) {}
 
     // Construtor para eventos de CHEGADA_PACOTE
-    Evento(double tempo, Pacote* p, int armazem_chegada_id) {
+    Evento(int tempo, Pacote* p, int armazem_chegada_id) {
         this->timestamp = tempo;
         this->tipo = TipoEvento::CHEGADA_PACOTE;
         this->pacote_ptr = p;
@@ -50,7 +50,7 @@ public:
     }
 
     // Construtor para eventos de TRANSPORTE_DIARIO
-    Evento(double tempo, int origem_transporte, int destino_transporte) {
+    Evento(int tempo, int origem_transporte, int destino_transporte) {
         this->timestamp = tempo;
         this->tipo = TipoEvento::TRANSPORTE_DIARIO;
         this->armazem_id_1 = origem_transporte;

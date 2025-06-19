@@ -36,18 +36,17 @@ int main(int argc, char *argv[])
             }
         }
 
-        // 3. Cria o Escalonador. AGORA o 'leitor' existe para fornecer os parâmetros.
         Escalonador escalonador(&rede,
                                 leitor.getCapacidadeTransporte(),
                                 leitor.getLatenciaTransporte(),
                                 leitor.getIntervaloTransportes(),
                                 leitor.getCustoRemocao(),
-                                leitor.getNumeroPacotes()); // Passa o total de pacotes
+                                leitor.getNumeroPacotes());
 
         // --- FASE 2: AGENDAMENTO DOS EVENTOS INICIAIS ---
 
         // 4. Agenda os primeiros eventos de transporte para cada conexão
-        double primeiro_transporte_t = leitor.getIntervaloTransportes();
+        int primeiro_transporte_t = leitor.getIntervaloTransportes();
         for (int i = 0; i < leitor.getNumeroArmazens(); ++i)
         {
             for (int j = i + 1; j < leitor.getNumeroArmazens(); ++j)

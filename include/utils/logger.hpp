@@ -19,9 +19,9 @@ inline std::string formatarID(int id, int largura)
 }
 
 // Função principal de log que formata a linha de saída completa
-inline void logEvento(double tempo, int id_pacote, const std::string &mensagem)
+inline void logEvento(int tempo, int id_pacote, const std::string &mensagem)
 {
-    std::cout << formatarID(static_cast<int>(tempo), 7) << " pacote "
+    std::cout << formatarID(tempo, 7) << " pacote "
               << formatarID(id_pacote, 3) << " " << mensagem << std::endl;
 }
 

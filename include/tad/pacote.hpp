@@ -21,19 +21,19 @@ private:
     int m_id;
     int m_origem_id;
     int m_destino_final_id;
-    double m_tempo_chegada_inicial; // Momento em que foi postado no sistema
+    int m_tempo_chegada_inicial; // Momento em que foi postado no sistema
 
     // Simulação
     EstadoPacote m_estado_atual;
     ListaEncadeada<int> m_rota;       // Rota a ser seguida (lista de IDs de armazéns)
-    double m_timestamp_ultimo_evento; // Guarda o tempo do último evento/mudança de estado
+    int m_timestamp_ultimo_evento; // Guarda o tempo do último evento/mudança de estado
 
     // Estatísticas
-    double m_tempo_armazenado_total;
-    double m_tempo_em_transito_total;
+    int m_tempo_armazenado_total;
+    int m_tempo_em_transito_total;
 
 public:
-    Pacote(int id, int origem, int destino, double tempo_chegada)
+    Pacote(int id, int origem, int destino, int tempo_chegada)
         : m_id(id),
           m_origem_id(origem),
           m_destino_final_id(destino),
@@ -48,17 +48,17 @@ public:
     int getID() const { return m_id; }
     int getOrigemID() const { return m_origem_id; }
     int getDestinoFinalID() const { return m_destino_final_id; }
-    double getTempoChegadaInicial() const { return m_tempo_chegada_inicial; }
+    int getTempoChegadaInicial() const { return m_tempo_chegada_inicial; }
     EstadoPacote getEstadoAtual() const { return m_estado_atual; }
-    double getTempoArmazenadoTotal() const { return m_tempo_armazenado_total; }
-    double getTempoEmTransitoTotal() const { return m_tempo_em_transito_total; }
+    int getTempoArmazenadoTotal() const { return m_tempo_armazenado_total; }
+    int getTempoEmTransitoTotal() const { return m_tempo_em_transito_total; }
     int getProximoDestinoNaRota() const;
 
     // Setters
     void setRota(const ListaEncadeada<int> &rota_calculada);
 
     void avancarNaRota();
-    void setEstado(EstadoPacote novo_estado, double tempo_do_evento);
+    void setEstado(EstadoPacote novo_estado, int tempo_do_evento);
     bool operator<(const Pacote &outro) const;
 };
 

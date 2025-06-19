@@ -6,7 +6,7 @@
 
 // Struct para agrupar os dados de um pacote lido do arquivo
 struct DadosPacote {
-    double tempo_chegada;
+    int tempo_chegada;
     int id;
     int id_origem;
     int id_destino;
