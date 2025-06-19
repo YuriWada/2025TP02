@@ -7,7 +7,6 @@
 #include "../include/tad/redelogistica.hpp"
 #include "../include/tad/armazem.hpp"
 #include "../include/tad/pacote.hpp"
-#include "../include/tad/evento.hpp"
 #include "../include/tad/escalonador.hpp"
 #include "../include/utils/logger.hpp"
 
