@@ -132,8 +132,13 @@ public:
         {
             throw std::runtime_error("Nao eh possivel remover de lista vazia!");
         }
+
+        // 1. Guarda o elemento que está na última posição
+        T elementoRemovido = m_dados[m_tamanho - 1];
+        // 2. Decrementa o tamanho para "remover" logicamente o elemento
         m_tamanho--;
-        return m_dados[m_tamanho]; // Retorna o elemento que estava na antiga última posição
+        // 3. Retorna o elemento que foi salvo
+        return elementoRemovido;
     }
 
     // remove e retorna elemento da posicao pos

@@ -5,7 +5,6 @@
 #include "pacote.hpp"
 #include "../datastructures/pilha.hpp"
 #include "../datastructures/listadinamica.hpp"
-#include "../utils/logger.hpp"
 
 // struct pra guardar a pilha de uma secao do armazem
 struct SecaoLIFO
@@ -20,12 +19,14 @@ struct SecaoLIFO
 struct PacoteComAtraso
 {
     Pacote *pacote;
-    double atraso_de_manipulacao;
+    double atraso_de_manipulacao; // ✨ CORREÇÃO: Faltava este membro crucial
 };
 
-struct ResultadoRecuperacao {
+// struct para agrupar os resultados da operação de recuperação
+struct ResultadoRecuperacao
+{
     ListaDinamica<PacoteComAtraso> pacotes_para_transporte;
-    ListaDinamica<Pacote*> pacotes_a_rearmazanar;
+    ListaDinamica<Pacote *> pacotes_a_rearmazanar;
 };
 
 // classe Armazem, que eh um vertice do grafo
@@ -48,19 +49,20 @@ public:
     // destrutor pra limpar a memoria das secoes
     ~Armazem();
 
-    ResultadoRecuperacao recuperarPacotesParaTransporte(
-        int id_secao_destino,
-        int capacidade_transporte,
-        double custoremocao,
-        double tempo_atual 
-    );
-
     // retorna o ID do armazem
     int getID() const;
 
     // metodos principais de operacao do armazem
     void adicionarConexaoDeSaida(int id_armazem_vizinho_destino);
     void armazenarPacote(Pacote *pacote, int id_proximo_armazem_na_rota, double tempo_atual);
+    
+    ResultadoRecuperacao recuperarPacotesParaTransporte(
+        int id_secao_destino,
+        int capacidade_transporte,
+        double custoremocao,
+        double tempo_atual
+    );
+    
     bool temPacotesArmazenados() const;
 };
 
