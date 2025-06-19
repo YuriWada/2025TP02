@@ -3,14 +3,15 @@
 #include "../../include/tad/armazem.hpp"
 #include <sstream>
 
-Escalonador::Escalonador(RedeLogistica *rede, int cap, int lat, int interv, int custo, int total_pacotes) : m_tempo_atual(0.0),
-                                                                                                                     m_rede_logistica_ptr(rede),
-                                                                                                                     m_capacidade_transporte(cap),
-                                                                                                                     m_latencia_transporte(lat),
-                                                                                                                     m_intervalo_transportes(interv),
-                                                                                                                     m_custo_remocao(custo),
-                                                                                                                     m_total_pacotes(total_pacotes),
-                                                                                                                     m_pacotes_entregues(0)
+Escalonador::Escalonador(RedeLogistica *rede, int cap, int lat, int interv, int custo, int total_pacotes, int tempo_primeiro_pacote) : m_tempo_atual(0),
+                                                                                                            m_rede_logistica_ptr(rede),
+                                                                                                            m_capacidade_transporte(cap),
+                                                                                                            m_latencia_transporte(lat),
+                                                                                                            m_intervalo_transportes(interv),
+                                                                                                            m_custo_remocao(custo),
+                                                                                                            m_tempo_offset_primeiro_pacote(tempo_primeiro_pacote),
+                                                                                                            m_total_pacotes(total_pacotes),
+                                                                                                            m_pacotes_entregues(0)
 {
 }
 
@@ -89,7 +90,7 @@ void Escalonador::processarEvento(const Evento &evento)
             for (int i = 0; i < pacotes_a_enviar.GetTamanho(); ++i)
             {
                 PacoteComAtraso &item = pacotes_a_enviar.BuscaElemento(i);
-                int tempo_partida_real = m_tempo_atual + item.atraso_de_manipulacao;
+                int tempo_partida_real = m_tempo_atual + item.atraso_de_manipulacao + m_tempo_offset_primeiro_pacote;
 
                 std::stringstream msg_removido, msg_transito;
                 msg_removido << "removido de " << formatarID(origem_id, 3) << " na secao " << formatarID(destino_id, 3);

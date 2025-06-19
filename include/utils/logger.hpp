@@ -19,10 +19,15 @@ inline std::string formatarID(int id, int largura)
 }
 
 // Função principal de log que formata a linha de saída completa
+// Esta versão garante que não haja espaços extras no final.
 inline void logEvento(int tempo, int id_pacote, const std::string &mensagem)
 {
-    std::cout << formatarID(tempo, 7) << " pacote "
-              << formatarID(id_pacote, 3) << " " << mensagem << std::endl;
+    std::cout << formatarID(tempo, 7)
+              << " pacote "
+              << formatarID(id_pacote, 3)
+              << " "
+              << mensagem   // A mensagem já contém os espaços que precisa
+              << std::endl; // std::endl finaliza a linha sem adicionar mais espaços.
 }
 
 #endif // LOGGER_HPP

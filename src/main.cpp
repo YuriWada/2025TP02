@@ -9,7 +9,6 @@
 #include "../include/tad/pacote.hpp"
 #include "../include/tad/evento.hpp"
 #include "../include/tad/escalonador.hpp"
-
 #include "../include/utils/logger.hpp"
 
 int main(int argc, char *argv[])
@@ -36,12 +35,27 @@ int main(int argc, char *argv[])
             }
         }
 
+        const auto &pacotes_data = leitor.getDadosPacotes();
+        int tempo_primeiro_pacote = -1;
+        if (pacotes_data.GetTamanho() > 0)
+        {
+            tempo_primeiro_pacote = pacotes_data.BuscaElemento(0).tempo_chegada;
+            for (int i = 1; i < pacotes_data.GetTamanho(); ++i)
+            {
+                if (pacotes_data.BuscaElemento(i).tempo_chegada < tempo_primeiro_pacote)
+                {
+                    tempo_primeiro_pacote = pacotes_data.BuscaElemento(i).tempo_chegada;
+                }
+            }
+        }
+
         Escalonador escalonador(&rede,
                                 leitor.getCapacidadeTransporte(),
                                 leitor.getLatenciaTransporte(),
                                 leitor.getIntervaloTransportes(),
                                 leitor.getCustoRemocao(),
-                                leitor.getNumeroPacotes());
+                                leitor.getNumeroPacotes(),
+                                tempo_primeiro_pacote);
 
         // --- FASE 2: AGENDAMENTO DOS EVENTOS INICIAIS ---
 
@@ -61,7 +75,6 @@ int main(int argc, char *argv[])
 
         // 5. Cria os Pacotes e agenda sua chegada na origem
         ListaDinamica<Pacote *> pacotes_criados; // Para gerenciar a memória
-        const auto &pacotes_data = leitor.getDadosPacotes();
         for (int i = 0; i < pacotes_data.GetTamanho(); ++i)
         {
             const DadosPacote &dados_pacote = pacotes_data.BuscaElemento(i);

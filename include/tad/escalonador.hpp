@@ -15,6 +15,7 @@ private:
     int m_latencia_transporte;
     int m_intervalo_transportes;
     int m_custo_remocao;
+    int m_tempo_offset_primeiro_pacote;
 
     int m_total_pacotes;
     int m_pacotes_entregues;
@@ -22,7 +23,7 @@ private:
     void processarEvento(const Evento& evento);
 
 public:
-    Escalonador(RedeLogistica* rede, int cap, int lat, int interv, int custo, int total_pacotes);
+    Escalonador(RedeLogistica* rede, int cap, int lat, int interv, int custo, int total_pacotes, int tempo_primeiro_pacote);
     void agendarEvento(const Evento& evento);
     void executar();
 };
