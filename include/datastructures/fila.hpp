@@ -5,7 +5,7 @@
 #include "listaencadeada.hpp" // Usa a lista encadeada como base
 
 /**
- * Fila que eu implementei usando a lista encadeada que já tava pronta.
+ * Fila usando a lista encadeada que já tava pronta.
  * A lógica é FIFO (First-In, First-Out), o primeiro a entrar é o primeiro a sair.
  * A frente da fila é o início da lista e o fim da fila é o final da lista.
  */

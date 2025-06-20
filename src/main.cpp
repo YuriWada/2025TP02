@@ -2,29 +2,35 @@
 #include <string>
 #include <stdexcept>
 
-// Inclua todas as suas classes TAD e de estruturas de dados
-#include "../include/utils/leitorconfiguracao.hpp" // O leitor que carrega tudo
+#include "../include/utils/leitorconfiguracao.hpp"
 #include "../include/tad/redelogistica.hpp"
 #include "../include/tad/armazem.hpp"
 #include "../include/tad/pacote.hpp"
 #include "../include/tad/escalonador.hpp"
 #include "../include/utils/logger.hpp"
 
+// Função principal do simulador.
 int main(int argc, char *argv[])
 {
+    // Bloco try-catch pra pegar qualquer erro que possa acontecer
+    // durante a execução e mostra uma mensagem amigável.
     try
     {
-        // --- FASE 1: LEITURA E CONFIGURAÇÃO ---
+        // Validação básica pra ver se o usuário passou o nome do arquivo.
+        if (argc < 2)
+        {
+            std::cerr << "Erro: Faltando nome do arquivo de entrada." << std::endl;
+            std::cerr << "Uso: ./simulador <arquivo_de_entrada>" << std::endl;
+            return 1;
+        }
 
-        // 1. Cria o objeto 'leitor'. Ele abre "entrada.txt" e carrega todos os dados.
-        //    A partir daqui, a variável 'leitor' existe e pode ser usada.
         LeitorConfiguracao leitor(argv[1]);
 
-        // 2. Cria a RedeLogistica usando o número de armazéns lido pelo 'leitor'.
         RedeLogistica rede(leitor.getNumeroArmazens());
         const auto &matriz = leitor.getMatrizAdjacencia();
         for (int i = 0; i < leitor.getNumeroArmazens(); ++i)
         {
+            // O j começa de i+1 pra não adicionar a mesma conexão duas vezes (ex: A->B e B->A).
             for (int j = i + 1; j < leitor.getNumeroArmazens(); ++j)
             {
                 if (matriz.BuscaElemento(i).BuscaElemento(j) == 1)
@@ -56,9 +62,6 @@ int main(int argc, char *argv[])
                                 leitor.getNumeroPacotes(),
                                 tempo_primeiro_pacote);
 
-        // --- FASE 2: AGENDAMENTO DOS EVENTOS INICIAIS ---
-
-        // 4. Agenda os primeiros eventos de transporte para cada conexão
         int primeiro_transporte_t = leitor.getIntervaloTransportes();
         for (int i = 0; i < leitor.getNumeroArmazens(); ++i)
         {
@@ -72,32 +75,31 @@ int main(int argc, char *argv[])
             }
         }
 
-        // 5. Cria os Pacotes e agenda sua chegada na origem
-        ListaDinamica<Pacote *> pacotes_criados; // Para gerenciar a memória
+        ListaDinamica<Pacote *> pacotes_criados; // Cria uma lista pra guardar os ponteiros de todos os pacotes que eu aloquei com 'new'.
         for (int i = 0; i < pacotes_data.GetTamanho(); ++i)
         {
             const DadosPacote &dados_pacote = pacotes_data.BuscaElemento(i);
 
+            // Cria o objeto Pacote no heap e passo o ID sequencial 'i'.
             Pacote *novo_pacote = new Pacote(
-                i, // O novo ID sequencial (0, 1, 2...)
+                i,
                 dados_pacote.id_origem,
                 dados_pacote.id_destino,
                 dados_pacote.tempo_chegada);
 
+            // Guarda o ponteiro pra poder deletar ele no final e não vazar memória.
             pacotes_criados.InsereFinal(novo_pacote);
 
+            // Pra cada pacote, calcula a rota usando o BFS da RedeLogistica.
             ListaEncadeada<int> rota = rede.encontrarRotaBFS(dados_pacote.id_origem, dados_pacote.id_destino);
             novo_pacote->setRota(rota);
 
+            // E finalmente, agenda o evento de chegada dele na origem.
             escalonador.agendarEvento(Evento(dados_pacote.tempo_chegada, novo_pacote, dados_pacote.id_origem));
         }
 
-        // --- FASE 3: EXECUÇÃO E LIMPEZA ---
-
-        // 6. Roda a simulação!
         escalonador.executar();
 
-        // 7. Libera a memória alocada para os pacotes
         for (int i = 0; i < pacotes_criados.GetTamanho(); ++i)
         {
             delete pacotes_criados.BuscaElemento(i);

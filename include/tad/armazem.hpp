@@ -19,7 +19,7 @@ struct SecaoLIFO
 struct PacoteComAtraso
 {
     Pacote *pacote;
-    int atraso_de_manipulacao; // ✨ CORREÇÃO: Faltava este membro crucial
+    int atraso_de_manipulacao;
 };
 
 // struct para agrupar os resultados da operação de recuperação

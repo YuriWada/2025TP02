@@ -67,16 +67,16 @@ public:
     // Operador de Atribuição por Cópia (=)
     PilhaEncadeada<T> &operator=(const PilhaEncadeada<T> &outra)
     {
-        // 1. Proteção contra auto-atribuição
+        // Proteção contra auto-atribuição
         if (this == &outra)
         {
             return *this;
         }
 
-        // 2. Limpa a pilha atual
+        // Limpa a pilha atual
         this->Limpa();
 
-        // 3. Copia os elementos da outra pilha (mesma lógica do construtor de cópia)
+        // Copia os elementos da outra pilha (mesma lógica do construtor de cópia)
         if (outra.topo != nullptr)
         {
             this->topo = new Celula<T>(outra.topo->item);
@@ -92,7 +92,7 @@ public:
             }
         }
 
-        // 4. Retorna referência para o objeto atual
+        // Retorna referência para o objeto atual
         return *this;
     }
 

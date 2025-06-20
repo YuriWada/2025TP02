@@ -2,7 +2,7 @@
 #define PACOTE_HPP
 
 #include <iostream>
-#include "../datastructures/listaencadeada.hpp" // Para armazenar a rota
+#include "../datastructures/listaencadeada.hpp"
 
 // Enumeração para os estados do pacote
 enum class EstadoPacote
@@ -25,7 +25,7 @@ private:
 
     // Simulação
     EstadoPacote m_estado_atual;
-    ListaEncadeada<int> m_rota;       // Rota a ser seguida (lista de IDs de armazéns)
+    ListaEncadeada<int> m_rota;    // Rota a ser seguida (lista de IDs de armazéns)
     int m_timestamp_ultimo_evento; // Guarda o tempo do último evento/mudança de estado
 
     // Estatísticas
@@ -41,8 +41,9 @@ public:
           m_estado_atual(EstadoPacote::NAO_POSTADO),
           m_timestamp_ultimo_evento(tempo_chegada), // O primeiro evento é a própria postagem
           m_tempo_armazenado_total(0.0),
-          m_tempo_em_transito_total(0.0) 
-          {}
+          m_tempo_em_transito_total(0.0)
+    {
+    }
 
     // Getters
     int getID() const { return m_id; }
