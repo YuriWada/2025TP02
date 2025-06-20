@@ -98,9 +98,7 @@ public:
     // Método público pra inserir um novo item.
     void insere(const T &item)
     {
-        // 1. Adiciono o item no final da lista.
         heap.InsereFinal(item);
-        // 2. Chamo o siftUp pra corrigir a posição dele e manter a propriedade do heap.
         int index = heap.GetTamanho() - 1;
         siftUp(index);
     }

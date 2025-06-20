@@ -18,41 +18,41 @@ class Pacote
 {
 private:
     // Dados de Entrada
-    int m_id;
-    int m_origem_id;
-    int m_destino_final_id;
-    int m_tempo_chegada_inicial; // Momento em que foi postado no sistema
+    int ent_id;
+    int ent_orig_id;
+    int ent_dest_final_id;
+    int ent_temp_chegada_inic; // Momento em que foi postado no sistema
 
     // Simulação
-    EstadoPacote m_estado_atual;
-    ListaEncadeada<int> m_rota;    // Rota a ser seguida (lista de IDs de armazéns)
-    int m_timestamp_ultimo_evento; // Guarda o tempo do último evento/mudança de estado
+    EstadoPacote est_inicial;
+    ListaEncadeada<int> sim_rota;    // Rota a ser seguida (lista de IDs de armazéns)
+    int ult_evento; // Guarda o tempo do último evento/mudança de estado
 
     // Estatísticas
-    int m_tempo_armazenado_total;
-    int m_tempo_em_transito_total;
+    int temp_armz_total;
+    int tmp_transito_total;
 
 public:
     Pacote(int id, int origem, int destino, int tempo_chegada)
-        : m_id(id),
-          m_origem_id(origem),
-          m_destino_final_id(destino),
-          m_tempo_chegada_inicial(tempo_chegada),
-          m_estado_atual(EstadoPacote::NAO_POSTADO),
-          m_timestamp_ultimo_evento(tempo_chegada), // O primeiro evento é a própria postagem
-          m_tempo_armazenado_total(0.0),
-          m_tempo_em_transito_total(0.0)
+        : ent_id(id),
+          ent_orig_id(origem),
+          ent_dest_final_id(destino),
+          ent_temp_chegada_inic(tempo_chegada),
+          est_inicial(EstadoPacote::NAO_POSTADO),
+          ult_evento(tempo_chegada), // O primeiro evento é a própria postagem
+          temp_armz_total(0.0),
+          tmp_transito_total(0.0)
     {
     }
 
     // Getters
-    int getID() const { return m_id; }
-    int getOrigemID() const { return m_origem_id; }
-    int getDestinoFinalID() const { return m_destino_final_id; }
-    int getTempoChegadaInicial() const { return m_tempo_chegada_inicial; }
-    EstadoPacote getEstadoAtual() const { return m_estado_atual; }
-    int getTempoArmazenadoTotal() const { return m_tempo_armazenado_total; }
-    int getTempoEmTransitoTotal() const { return m_tempo_em_transito_total; }
+    int getID() const { return ent_id; }
+    int getOrigemID() const { return ent_orig_id; }
+    int getDestinoFinalID() const { return ent_dest_final_id; }
+    int getTempoChegadaInicial() const { return ent_temp_chegada_inic; }
+    EstadoPacote getEstadoAtual() const { return est_inicial; }
+    int getTempoArmazenadoTotal() const { return temp_armz_total; }
+    int getTempoEmTransitoTotal() const { return tmp_transito_total; }
     int getProximoDestinoNaRota() const;
 
     // Setters

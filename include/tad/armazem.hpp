@@ -33,7 +33,7 @@ struct ResultadoRecuperacao
 class Armazem
 {
 private:
-    int m_id;
+    int ent_id;
     ListaDinamica<SecaoLIFO *> m_secoes_de_saida;
 
     // funcao auxiliar pra achar a secao de um destino

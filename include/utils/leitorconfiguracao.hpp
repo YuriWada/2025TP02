@@ -17,10 +17,10 @@ class LeitorConfiguracao
 {
 private:
     // Membros para armazenar todos os dados lidos do arquivo
-    int m_capacidade_transporte;
-    int m_latencia_transporte;
-    int m_intervalo_transportes;
-    int m_custo_remocao;
+    int esc_capacidade_transporte;
+    int esc_latencia_transporte;
+    int esc_intervalo_transportes;
+    int esc_custo_remocao;
     int m_numero_armazens;
     ListaDinamica<ListaDinamica<int>> m_matriz_adjacencia;
     int m_numero_pacotes;

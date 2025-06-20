@@ -9,10 +9,10 @@ LeitorConfiguracao::LeitorConfiguracao(const std::string& nome_arquivo) {
     }
 
     // Lê os parâmetros globais da simulação
-    arquivo >> m_capacidade_transporte;
-    arquivo >> m_latencia_transporte;
-    arquivo >> m_intervalo_transportes;
-    arquivo >> m_custo_remocao;
+    arquivo >> esc_capacidade_transporte;
+    arquivo >> esc_latencia_transporte;
+    arquivo >> esc_intervalo_transportes;
+    arquivo >> esc_custo_remocao;
     
     // Lê a topologia da rede
     arquivo >> m_numero_armazens;
@@ -48,10 +48,10 @@ LeitorConfiguracao::LeitorConfiguracao(const std::string& nome_arquivo) {
 }
 
 // Implementação dos Getters
-int LeitorConfiguracao::getCapacidadeTransporte() const { return m_capacidade_transporte; }
-int LeitorConfiguracao::getLatenciaTransporte() const { return m_latencia_transporte; }
-int LeitorConfiguracao::getIntervaloTransportes() const { return m_intervalo_transportes; }
-int LeitorConfiguracao::getCustoRemocao() const { return m_custo_remocao; }
+int LeitorConfiguracao::getCapacidadeTransporte() const { return esc_capacidade_transporte; }
+int LeitorConfiguracao::getLatenciaTransporte() const { return esc_latencia_transporte; }
+int LeitorConfiguracao::getIntervaloTransportes() const { return esc_intervalo_transportes; }
+int LeitorConfiguracao::getCustoRemocao() const { return esc_custo_remocao; }
 int LeitorConfiguracao::getNumeroArmazens() const { return m_numero_armazens; }
 const ListaDinamica<ListaDinamica<int>>& LeitorConfiguracao::getMatrizAdjacencia() const { return m_matriz_adjacencia; }
 int LeitorConfiguracao::getNumeroPacotes() const { return m_numero_pacotes; }

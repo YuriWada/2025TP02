@@ -7,7 +7,7 @@
 SecaoLIFO::SecaoLIFO(int id_destino) : id_armazem_destino_vizinho(id_destino) {}
 
 // construtor do Armazem
-Armazem::Armazem(int id_unico) : m_id(id_unico) {}
+Armazem::Armazem(int id_unico) : ent_id(id_unico) {}
 
 // destrutor do Armazem
 Armazem::~Armazem()
@@ -22,7 +22,7 @@ Armazem::~Armazem()
 // retorna o ID do armazem
 int Armazem::getID() const
 {
-    return this->m_id;
+    return this->ent_id;
 }
 
 // implementa a busca por uma secao especifica

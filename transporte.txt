@@ -16,18 +16,18 @@ void testarTransporte()
     std::cout << "\n--- Teste 1: Criacao e Getters ---" << std::endl;
 
     // Parâmetros para o teste
-    int origem_id = 0;
+    int origeent_id = 0;
     int destino_id = 2;
     double partida_t = 101.0;
     double chegada_t = 121.0;
 
     // Criação do objeto
-    Transporte transporte_teste(origem_id, destino_id, partida_t, chegada_t);
+    Transporte transporte_teste(origeent_id, destino_id, partida_t, chegada_t);
     std::cout << "Objeto Transporte criado para a rota 0 -> 2." << std::endl;
 
     // Verificação dos dados iniciais usando os getters
     std::cout << "Verificando ID de Origem... "
-              << (transporte_teste.getOrigemID() == origem_id ? "OK" : "FALHA") << std::endl;
+              << (transporte_teste.getOrigemID() == origeent_id ? "OK" : "FALHA") << std::endl;
 
     std::cout << "Verificando ID de Destino... "
               << (transporte_teste.getDestinoID() == destino_id ? "OK" : "FALHA") << std::endl;
